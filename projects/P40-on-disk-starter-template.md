@@ -12,9 +12,12 @@
 
 **Goal**: Restore an on-disk starter config template as the source of truth for
 `doxa init` output, replacing the schema-driven generator introduced in P33.
-Keep the no-drift property P33 was enforcing by adding a one-direction test
-that asserts the template matches every `StarterField` default in the
-Pydantic schema.
+Keep the no-drift property P33 was enforcing by adding (1) a new
+`doxa config validate` CLI command that runs Pydantic schema validation
+against any TOML file and, when pointed at the starter template, also
+enforces `StarterField` value-parity, and (2) a `lefthook` pre-commit hook
+scoped to the template path that invokes the new command automatically
+whenever the template is staged.
 
 ## Motivation
 
@@ -72,6 +75,38 @@ output) is unchanged. Only the *source* of those bytes changes.
   parsed template — should be a no-op since the wizard already takes a
   `TOMLDocument` and only touches `[general].default_mode` and
   `[providers.<name>].api_key`.
+
+**New CLI surface (validation tooling):**
+
+- Add `doxa config validate [PATH]` subcommand:
+  - With no PATH, validates the resolved user-tier config
+    (`~/.config/doxa/doxa.config.toml`).
+  - With explicit PATH, validates that TOML file against `DoxaConfig`.
+  - When PATH points at the shipped starter template, ALSO runs the
+    drift assertion (every `StarterField` default in the schema appears
+    with the same value at the same TOML path in the template).
+  - Exits 0 on success; exits 1 with a clear error pointing at the
+    offending field/path on failure.
+  - Supports `--json` for the standard envelope (see
+    `docs/json-output.md`).
+- Add `doxa config validate` to `docs/COMMANDS.md` config-subcommands
+  table and to the `tests/test_docs_command_reference.py` coverage
+  guard.
+
+**New pre-commit hook (lefthook):**
+
+- Add a `lefthook.yml` `pre-commit` entry scoped to
+  `src/doxa_research/data/starter.config.toml`:
+  ```yaml
+  validate-starter-template:
+    glob: "src/doxa_research/data/starter.config.toml"
+    run: uv run doxa config validate src/doxa_research/data/starter.config.toml
+  ```
+  Triggers only when that exact file is staged. Fast — single TOML
+  parse + schema walk + drift check — so it's fine in the always-on
+  pre-commit pipeline.
+- The hook reuses the same code path the standalone command exposes,
+  so there's no risk of CLI behavior and hook behavior diverging.
 
 **Preserved (no change):**
 
@@ -145,6 +180,30 @@ output) is unchanged. Only the *source* of those bytes changes.
 - [ ] [P40-T08] Update `docs/HERO-RECORDING.md` / `CONTRIBUTING.md`
   if either references the schema-driven generation as a feature
   contributors should know about.
+- [ ] [P40-T09] Implement `doxa config validate [PATH]` subcommand
+  in `src/doxa_research/cli_subcommands/config.py`. With no PATH,
+  validate the user-tier config; with PATH, validate that file
+  against `DoxaConfig`; when PATH is the shipped starter template,
+  also run drift assertions against the schema. Support `--json`.
+  Exit 0 on success, 1 on failure with a precise location pointer.
+- [ ] [P40-T10] Add a `pre-commit` `validate-starter-template` entry
+  in `lefthook.yml`, globbed to
+  `src/doxa_research/data/starter.config.toml`. The entry invokes
+  `uv run doxa config validate <that path>`. Hook also runs from CI
+  via the existing lefthook-on-CI path (no separate workflow needed).
+- [ ] [P40-T11] Surface the new command in `docs/COMMANDS.md` config
+  subcommands table and add coverage in
+  `tests/test_docs_command_reference.py`.
+- [ ] [P40-TS04] Tests for `doxa config validate`:
+  - Valid template → exit 0.
+  - Template with a value mutated (e.g. swap `default_mode = "default"`
+    for `default_mode = "bogus"`) → exit 1 with the failing path.
+  - Template missing a `StarterField`-marked key → exit 1 with the
+    missing path.
+  - JSON envelope shape on both success and failure paths.
+- [ ] [P40-TS05] Smoke-test the pre-commit hook: stage a corrupted
+  copy of the template, attempt `git commit`, assert the hook
+  rejects the commit and surfaces the validate error.
 
 ## Acceptance Criteria
 
@@ -153,8 +212,17 @@ output) is unchanged. Only the *source* of those bytes changes.
   Doxa load cleanly.
 - `doxa init` produces the same on-disk file (bit-for-bit, except for
   wizard-mutated fields) as it did before P40.
-- The drift test fails if any `StarterField` default in the schema
-  differs from the template's value at the same TOML path.
+- `doxa config validate src/doxa_research/data/starter.config.toml`
+  exits 0 on a clean template.
+- The same command exits 1 with a precise error path when any
+  `StarterField` default in the schema differs from the template's
+  value at the same TOML path.
+- `doxa config validate ~/.config/doxa/doxa.config.toml` (no PATH
+  form) validates the user-tier config against `DoxaConfig` and
+  reports any schema violation.
+- Pre-commit hook `validate-starter-template` runs (via `lefthook
+  run pre-commit`) when the template is staged and blocks the commit
+  on validation failure.
 - `_starter_data.py` and `WRITER_COMMENTS` are removed from the source
   tree.
 - `just check-all` and `./doxa_test -r` pass green.
@@ -185,10 +253,19 @@ output) is unchanged. Only the *source* of those bytes changes.
 ## Estimated impact
 
 - **LOC delta**: roughly −250 (remove generator + `_starter_data.py` +
-  `WRITER_COMMENTS`) and +100 (template file + drift test). Net
-  simplification ~150 lines.
+  `WRITER_COMMENTS`) and +180 (template file, drift test, new
+  `doxa config validate` subcommand, lefthook hook entry). Net
+  simplification ~70 lines.
 - **Cognitive surface**: starter content moves from 3 Python sources
   to 1 text file + 1 schema marker. Onboarding cost for contributors
   drops noticeably.
-- **No user-visible change** if implemented correctly. Acceptance
-  criterion #2 (bit-for-bit parity) is the contract.
+- **New user-visible surface**: `doxa config validate` is a small but
+  useful addition. Without P40 it could ship standalone; pairing the
+  two means the drift property is enforced and observable via the same
+  command users would reach for to validate their own configs.
+- **Pre-commit guarantee**: contributors editing the template can't
+  ship a desynchronized version — the lefthook entry blocks commits
+  on validation failure, surfacing the precise schema mismatch.
+- **No CLI behavior change** if implemented correctly for the existing
+  surface. Acceptance criterion #2 (bit-for-bit parity for
+  `doxa init`) is the contract.
