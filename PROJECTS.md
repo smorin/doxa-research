@@ -72,6 +72,7 @@ Older entries may use `**Primary spec**`, `**Plan**`, or
 <!-- Descending P-number order. Scoped / in-progress / done first;
      ideas last. One row per file; one file per row. -->
 
+- [ ] **P41** — [`--no-validate` Redesign (Make the Flag Mean What It Says)](projects/P41-no-validate-redesign.md)
 - [?] **P39** — [Pluggy-Based Plugin System for Providers & Commands](projects/P39-pluggy-plugin-system-.md)
 - [ ] **P38** — [Perplexity Sync VCR Replay](projects/P38-perplexity-sync-vcr-replay.md)
 - [?] **P37** — [Review starter-profile selection](projects/P37-starter-profile-review-.md)
