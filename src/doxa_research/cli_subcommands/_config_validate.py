@@ -42,6 +42,19 @@ class ValidationResult:
     checks: tuple[str, ...] = ()
 
 
+_MISSING = object()
+
+
+def _lookup(doc: dict[str, Any], path: tuple[str, ...]) -> Any:
+    """Walk ``path`` through ``doc``; return ``_MISSING`` if any segment is absent."""
+    cur: Any = doc
+    for key in path:
+        if not isinstance(cur, dict) or key not in cur:
+            return _MISSING
+        cur = cur[key]
+    return cur
+
+
 def validate_config_file(
     path: Path,
     *,
@@ -63,8 +76,8 @@ def validate_config_file(
         default_config_dict,
     )
 
-    resolved = path.resolve() if path.exists() else path
-    if not path.exists():
+    resolved = path.resolve()
+    if not resolved.exists():
         return ValidationResult(
             ok=False,
             path=resolved,
@@ -111,7 +124,7 @@ def validate_config_file(
 
     # ---- drift phase ----
     expected_doc = default_config_dict()
-    for starter_path in ConfigSchema.starter_keys():
+    for starter_path in sorted(ConfigSchema.starter_keys()):
         expected = _lookup(expected_doc, starter_path)
         actual = _lookup(doc, starter_path)
         if actual is _MISSING:
@@ -136,15 +149,3 @@ def validate_config_file(
             )
 
     return ValidationResult(ok=True, path=resolved, checks=("schema", "drift"))
-
-
-_MISSING = object()
-
-
-def _lookup(doc: dict[str, Any], path: tuple[str, ...]) -> Any:
-    cur: Any = doc
-    for key in path:
-        if not isinstance(cur, dict) or key not in cur:
-            return _MISSING
-        cur = cur[key]
-    return cur
