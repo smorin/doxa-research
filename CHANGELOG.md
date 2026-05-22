@@ -2,6 +2,14 @@
 
 All notable changes to Doxa Research are documented here.
 
+## [3.0.14](https://github.com/smorin/doxa-research/compare/v3.0.13...v3.0.14) (2026-05-22)
+
+
+### Documentation
+
+* **projects:** P41 — rewrite to match actual current validation behavior ([baf7202](https://github.com/smorin/doxa-research/commit/baf7202f1612d1ac20dbfcd9193246887b58e851))
+* **projects:** propose P41 — --no-validate redesign ([778eb11](https://github.com/smorin/doxa-research/commit/778eb115e501d7f41c6f0e635c7557f5f9344b96))
+
 ## [3.0.13](https://github.com/smorin/doxa-research/compare/v3.0.12...v3.0.13) (2026-05-22)
 
 
