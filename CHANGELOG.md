@@ -2,6 +2,13 @@
 
 All notable changes to Doxa Research are documented here.
 
+## [3.0.12](https://github.com/smorin/doxa-research/compare/v3.0.11...v3.0.12) (2026-05-22)
+
+
+### Documentation
+
+* **projects:** propose P40 — on-disk starter template (reverse P33) ([#81](https://github.com/smorin/doxa-research/issues/81)) ([edd23eb](https://github.com/smorin/doxa-research/commit/edd23ebd8d4cfafec4449e595c55f22c36fd20ba))
+
 ## [3.0.11](https://github.com/smorin/doxa-research/compare/v3.0.10...v3.0.11) (2026-05-18)
 
 
