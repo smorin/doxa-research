@@ -2,6 +2,13 @@
 
 All notable changes to Doxa Research are documented here.
 
+## [3.0.13](https://github.com/smorin/doxa-research/compare/v3.0.12...v3.0.13) (2026-05-22)
+
+
+### Bug Fixes
+
+* **ci:** remove trailing whitespace in P40 starter template doc ([d2f4c0d](https://github.com/smorin/doxa-research/commit/d2f4c0de4e2a20fc5a47e5a0a59f3c2918dd464d))
+
 ## [3.0.12](https://github.com/smorin/doxa-research/compare/v3.0.11...v3.0.12) (2026-05-22)
 
 
