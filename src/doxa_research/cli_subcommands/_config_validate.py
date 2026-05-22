@@ -59,7 +59,6 @@ def validate_config_file(
 
     from doxa_research.config_schema import (
         ConfigSchema,
-        DoxaConfig,  # noqa: F401
         UserConfigFile,
         default_config_dict,
     )
