@@ -196,3 +196,30 @@ Remove with one sed invocation:
     sed -i '/# >>> doxa-research completion >>>/,/# <<< doxa-research completion <<</d' ~/.bashrc
 
 A real `--uninstall` flag is a future PR.
+
+## `config validate [PATH] --json`
+
+**Success envelope** — exit 0:
+
+```json
+{
+  "status": "ok",
+  "data": {
+    "path": "<resolved path>",
+    "checks": ["schema"]
+  }
+}
+```
+
+(`checks` is `["schema", "drift"]` when PATH resolves to the shipped starter template.)
+
+**Error envelope** — exit 1. Error codes:
+
+| code | When |
+|---|---|
+| `FILE_NOT_FOUND` | PATH does not exist, or no PATH and no user-tier config file. |
+| `TOML_PARSE_ERROR` | File is not valid TOML. `details.path` includes line context where available. |
+| `SCHEMA_VALIDATION` | File parses but fails `UserConfigFile.model_validate`. `details.errors` is the full Pydantic error list. |
+| `DRIFT_MISSING_KEY` | Drift check: template missing a `StarterField` path. `details.path` and `details.expected`. |
+| `DRIFT_VALUE_MISMATCH` | Drift check: value at a `StarterField` path differs from schema default. `details.path`, `details.expected`, `details.actual`. |
+| `PACKAGE_DATA_MISSING` | `importlib.resources` could not resolve the shipped template (broken wheel). |
