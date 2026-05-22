@@ -109,27 +109,27 @@ _CLARIFICATION_SYSTEM_PROMPT = (
 class ClarificationCLIConfig(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    provider: str = Field("openai")
-    model: str = Field("gpt-4o-mini")
-    temperature: float = Field(0.7)
-    max_tokens: int = Field(500)
-    retry_attempts: int = Field(3)
-    retry_delay: float = Field(2.0)
-    system_prompt: str = Field(_CLARIFICATION_SYSTEM_PROMPT)
+    provider: str = StarterField("openai")
+    model: str = StarterField("gpt-4o-mini")
+    temperature: float = StarterField(0.7)
+    max_tokens: int = StarterField(500)
+    retry_attempts: int = StarterField(3)
+    retry_delay: float = StarterField(2.0)
+    system_prompt: str = StarterField(_CLARIFICATION_SYSTEM_PROMPT)
 
 
 class ClarificationInteractiveConfig(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    provider: str = Field("openai")
-    model: str = Field("gpt-4o-mini")
-    temperature: float = Field(0.7)
-    max_tokens: int = Field(800)
-    retry_attempts: int = Field(3)
-    retry_delay: float = Field(2.0)
-    system_prompt: str = Field(_CLARIFICATION_SYSTEM_PROMPT)
-    input_height: int = Field(6)
-    max_input_height: int = Field(15)
+    provider: str = StarterField("openai")
+    model: str = StarterField("gpt-4o-mini")
+    temperature: float = StarterField(0.7)
+    max_tokens: int = StarterField(800)
+    retry_attempts: int = StarterField(3)
+    retry_delay: float = StarterField(2.0)
+    system_prompt: str = StarterField(_CLARIFICATION_SYSTEM_PROMPT)
+    input_height: int = StarterField(6)
+    max_input_height: int = StarterField(15)
 
 
 class ClarificationConfig(BaseModel):
