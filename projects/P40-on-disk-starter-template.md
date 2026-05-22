@@ -141,7 +141,7 @@ output) is unchanged. Only the *source* of those bytes changes.
    excluded from the starter doc, defaults applied at runtime via Pydantic.
    Recommend preserve — don't change observable behavior in this PR.
 
-   Answer: move into config so it's configurable. 
+   Answer: move into config so it's configurable.
 3. **One template or split?** Recommend single file for the simpler mental
    model; user sees one artifact. The profile section is the lengthiest
    piece (six profile blocks) but is still readable inline.
