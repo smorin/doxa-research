@@ -372,10 +372,13 @@ def test_gemini_config_has_dr_tunables() -> None:
     assert cfg.max_wait_minutes == 60  # upstream max research time
 
 
-def test_starter_keys_excludes_clarification_section() -> None:
-    """The whole `clarification` section is not shipped (no StarterField anywhere)."""
+def test_starter_keys_includes_clarification_section() -> None:
+    """The whole `clarification` section is shipped (all 16 leaves are StarterField)."""
     from doxa_research.config_schema import ConfigSchema
 
     keys = ConfigSchema.starter_keys()
-    leaked = {k for k in keys if k and k[0] == "clarification"}
-    assert not leaked, f"Clarification leaked: {leaked}"
+    clarification_keys = {k for k in keys if k and k[0] == "clarification"}
+    assert clarification_keys, "Clarification section is missing from starter keys"
+    assert len(clarification_keys) == 16, (
+        f"Expected 16 clarification keys, got {len(clarification_keys)}: {clarification_keys}"
+    )
