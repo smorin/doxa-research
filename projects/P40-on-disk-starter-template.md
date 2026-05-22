@@ -135,15 +135,23 @@ output) is unchanged. Only the *source* of those bytes changes.
    `src/doxa_research/data/starter.config.toml`. The convention matches the
    `cli_subcommands/` and `completion/` subpackages that ship code; `data/`
    is the standard name for non-Python resources in a wheel.
+
+   Answer: use  `src/doxa_research/data/starter.config.toml`
 2. **Should the template include `[clarification]`?** Current behavior:
    excluded from the starter doc, defaults applied at runtime via Pydantic.
    Recommend preserve — don't change observable behavior in this PR.
+
+   Answer: move into config so it's configurable. 
 3. **One template or split?** Recommend single file for the simpler mental
    model; user sees one artifact. The profile section is the lengthiest
    piece (six profile blocks) but is still readable inline.
+
+   Answer: single file
 4. **What about the wizard's runtime customization?** Unchanged — the
    wizard still mutates only two keys (`general.default_mode` and
    `providers.<name>.api_key`). The parsed template is the input.
+
+   Answer: Unchanged
 
 ## Tests & Tasks
 
