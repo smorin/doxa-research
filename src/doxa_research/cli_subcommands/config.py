@@ -760,13 +760,21 @@ def config_validate(
     try:
         shipped = Path(str(files("doxa_research.data") / "starter.config.toml")).resolve()
     except (FileNotFoundError, ModuleNotFoundError):
-        shipped = None
+        msg = "package data missing: doxa_research/data/starter.config.toml"
+        if as_json:
+            emit_error(
+                "PACKAGE_DATA_MISSING",
+                msg,
+                details={"path": "doxa_research/data/starter.config.toml"},
+            )
+        click.echo(f"Error: {msg}", err=True)
+        ctx.exit(1)
 
     try:
         target_resolved = target.resolve()
     except OSError:
         target_resolved = target
-    drift = shipped is not None and target_resolved == shipped
+    drift = target_resolved == shipped
 
     result = validate_config_file(target, drift_check=drift)
 
@@ -782,12 +790,13 @@ def config_validate(
             emit_error(
                 result.error or "VALIDATION_FAILED",
                 result.message,
-                details=result.details or None,
+                details=result.details if result.details else None,
             )
+        return  # unreachable in practice but makes control flow explicit
 
     if result.ok:
         checks = " + ".join(result.checks) if result.checks else ""
         click.echo(f"OK: {result.path} ({checks})")
-        ctx.exit(0)
+        return
     click.echo(f"Error: {result.message}", err=True)
     ctx.exit(1)
