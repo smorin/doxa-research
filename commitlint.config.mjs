@@ -8,7 +8,7 @@
 // and NO project-level package.json.
 
 export default {
-  ignores: [(message) => message === 'Clarify behavior and recommendations for --no-validate'],
+  ignores: [(message) => message.startsWith('Clarify behavior and recommendations for --no-validate')],
   rules: {
     'type-empty': [2, 'never'],
     'type-case': [2, 'always', 'lower-case'],
