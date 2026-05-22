@@ -109,21 +109,32 @@ or `git commit --no-verify` style commands.
    minor (v3.X.0) with an explicit changelog entry under "Behavior
    change" — not a deprecation cycle, because the current behavior
    is broken-by-design.
+
+   Yes ship with behavioral change and make sure we add a unit test for it.
+   
 2. **Where does the stderr warning render?**
    Recommend `rich.console.Console(stderr=True).print(...)` to keep
    it consistent with other stderr-routed messages in the codebase.
    The warning should NOT be subject to the existing config-warning
    suppression (since suppressing the "validation skipped" notice
    would defeat the safety contract).
+
+   Answer: Do recommendation Recommend `rich.console.Console(stderr=True).print(...)`
+   
 3. **Should we cover `--no-validate` in `--json` envelope output?**
    Yes — when `--json` is set, the warning should appear as a
    `warnings` array entry in the envelope rather than free-form
    stderr. Avoid breaking the JSON contract for script consumers.
+
+   Answer: Yes as JSON
+
 4. **What does `doxa config validate` (P40-T09) do when called with
    `--no-validate`?** The combination is nonsensical (you can't ask
    to validate and bypass validation at the same time). CLI should
    reject the combination at preflight with a clear error. This is a
    cross-project concern; coordinate with P40.
+
+   This should error saying you can't set both
 
 ## Tests & Tasks
 
