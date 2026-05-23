@@ -44,7 +44,9 @@ def test_get_mode_config_still_resolves_real_builtins() -> None:
 
 def test_get_mode_config_resolves_user_defined_mode() -> None:
     cm = ConfigManager()
-    cm.load_all_layers({"modes": {"my_custom": {"provider": "mock", "model": "test", "kind": "immediate"}}})
+    cm.load_all_layers(
+        {"modes": {"my_custom": {"provider": "mock", "model": "test", "kind": "immediate"}}}
+    )
     cfg = cm.get_mode_config("my_custom")
     assert cfg["provider"] == "mock"
     assert cfg["model"] == "test"
