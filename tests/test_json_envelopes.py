@@ -113,12 +113,6 @@ def test_json_envelope_contract(label, argv, exit_code, cli, isolated_doxa_home,
     # `config edit` opens $EDITOR; force a no-op editor for the parametrize row.
     if "edit" in argv:
         monkeypatch.setenv("EDITOR", "true")
-    # `config validate` with the shipped template runs a drift check against
-    # schema defaults, which include XDG_STATE_HOME-derived paths.  Restore
-    # the real XDG_STATE_HOME so the drift check sees the same checkpoint_dir
-    # as the value baked into the shipped template.
-    if label == "config_validate_template":
-        monkeypatch.delenv("XDG_STATE_HOME", raising=False)
     runner = CliRunner()  # NOTE: drop mix_stderr=False — Click 8.3 removed it (PR2 precedent)
     # P21b profile-row seeding: rows that exercise a profile target need the
     # `fast` profile (and sometimes a key/value or persisted default) in place

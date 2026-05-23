@@ -7,7 +7,6 @@ default_mode = "default"
 
 [paths]
 base_output_dir = "./research-outputs"
-checkpoint_dir = "/Users/stevemorin/.local/state/doxa/checkpoints"
 
 [execution]
 poll_interval = 30

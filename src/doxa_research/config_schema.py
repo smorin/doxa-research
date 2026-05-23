@@ -31,14 +31,17 @@ _no_validate: bool = False
 
 
 def StarterField(default: Any = ..., *, default_factory: Any = None, **kwargs: Any) -> Any:  # noqa: N802
-    """Return a Pydantic Field marked as a 'starter' field.
+    """Mark a literal default as shipped in the starter template.
 
-    Starter fields appear in the generated starter config file. Non-starter
-    fields are advanced and omitted from starters by default.
+    Fields with ``default_factory=...`` are env-derived (computed at runtime
+    per-user by Pydantic) and are intentionally NOT marked ``in_starter`` —
+    they must not appear in the on-disk starter template, since baking a
+    literal env-derived value would ship one user's environment to every
+    install. See docs/superpowers/specs/2026-05-21-p40-on-disk-starter-template-design.md.
     """
-    extra = {"in_starter": True}
     if default_factory is not None:
-        return Field(default_factory=default_factory, json_schema_extra=extra, **kwargs)
+        return Field(default_factory=default_factory, **kwargs)
+    extra = {"in_starter": True}
     return Field(default, json_schema_extra=extra, **kwargs)
 
 

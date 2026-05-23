@@ -71,6 +71,10 @@ The reversal is also low-risk: the consumer surface (`doxa init`'s on-disk outpu
 - **`doxa config validate` is the bridge.** End users (`doxa config validate ~/.config/doxa/doxa.config.toml`) and CI (`lefthook` invoking the same command on the shipped template) traverse the same code. The drift check is conditional on PATH resolving to the shipped template path; for any other PATH it's schema validation only.
 - **Drift expected values come from instantiated defaults.** The walker uses `StarterField` metadata to discover paths, but reads expected values from `DoxaConfig().model_dump(mode="python", exclude_none=True)`. This preserves parent default factories such as `[providers.openai].api_key = "${OPENAI_API_KEY}"`.
 - **Path-equality gate** uses `target_path.resolve() == (importlib.resources.files("doxa_research.data") / "starter.config.toml").resolve()`. Handles relative paths, symlinks, editable vs wheel installs.
+- **`StarterField(default_factory=...)` is env-derived; the field is computed
+  at runtime by Pydantic per-user and is NOT shipped in the on-disk template.
+  Only `StarterField(literal_value)` fields appear in the template. This
+  prevents baking the build machine's environment into every wheel install.**
 
 ## Components
 

@@ -331,7 +331,6 @@ def test_starter_keys_includes_top_level_in_starter_leaves() -> None:
         ("general", "default_project"),
         ("general", "default_mode"),
         ("paths", "base_output_dir"),
-        ("paths", "checkpoint_dir"),
         ("execution", "poll_interval"),
         ("execution", "max_wait"),
         ("execution", "parallel_providers"),
