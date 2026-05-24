@@ -2,6 +2,58 @@
 
 All notable changes to Doxa Research are documented here.
 
+## [3.1.0](https://github.com/smorin/doxa-research/compare/v3.0.14...v3.1.0) (2026-05-24)
+
+
+### Features
+
+* **p40:** add doxa config validate subcommand ([bd65fc0](https://github.com/smorin/doxa-research/commit/bd65fc0563dc6dc3a5c27ccc47c689a29ada3480))
+* **p40:** add doxa_research.data subpackage with starter.config.toml ([7400858](https://github.com/smorin/doxa-research/commit/7400858abc96399ff42d1cfc6dc28bdcf54c3f54))
+* **p40:** implement validate_config_file with schema + drift phases ([5038fe3](https://github.com/smorin/doxa-research/commit/5038fe3380fe6283363f8ebd191920a1a8e9e7a9))
+* **p40:** mark ClarificationConfig leaves as StarterField ([f16200d](https://github.com/smorin/doxa-research/commit/f16200d1ba0dd6d1972546e4e7f9df9dcb8843ba))
+* **p40:** on-disk starter template + doxa config validate ([210acf9](https://github.com/smorin/doxa-research/commit/210acf971fe0605c23e6bda381954598759ec2df))
+* **p40:** scaffold _config_validate module with stubbed body ([dea6958](https://github.com/smorin/doxa-research/commit/dea6958272d7b2a5118c8cd2d9cdf68b3136974f))
+* **p40:** ship [clarification] section in the starter template ([c6f68d8](https://github.com/smorin/doxa-research/commit/c6f68d8a42403f371067eb47d38bb21d44859417))
+
+
+### Bug Fixes
+
+* **p40:** exclude env-derived StarterFields from starter template ([b23858e](https://github.com/smorin/doxa-research/commit/b23858ef5ca04e33d25a4acc68b2f46aaa5403d0))
+* **p40:** harden validate_config_file I/O and correct stale docs ([8871e55](https://github.com/smorin/doxa-research/commit/8871e55eb98dac190f89523d329d6c04f46c5504))
+* **test:** replace P16 version baselines with structural assertion ([7c44e4c](https://github.com/smorin/doxa-research/commit/7c44e4cc8fa91daee2646b412b4b9629d2ab2a2c))
+
+
+### Refactoring
+
+* **p40:** remove unused DoxaConfig import from _config_validate ([2ee3854](https://github.com/smorin/doxa-research/commit/2ee3854be1dd89ce87a1a6db9111439faab74a3b))
+* **p40:** replace _build_starter_document generator with on-disk reader ([c6a9870](https://github.com/smorin/doxa-research/commit/c6a987038f06d62a87e2632087e1b6a5ac56758e))
+* **p40:** surface PACKAGE_DATA_MISSING and tighten control flow ([163a465](https://github.com/smorin/doxa-research/commit/163a46503b95688e495c0bc4b33a4965211660e1))
+* **p40:** tighten _config_validate (sentinel ordering, deterministic drift, simpler resolve) ([316ef65](https://github.com/smorin/doxa-research/commit/316ef6552a552271a03a923de6d629f8eafb1c8b))
+
+
+### Documentation
+
+* **p40:** add design spec for on-disk starter template ([af0e56f](https://github.com/smorin/doxa-research/commit/af0e56fb3b7fdd34ebdb97621118e15f0b19d2c0))
+* **p40:** add implementation plan for on-disk starter template ([db73c35](https://github.com/smorin/doxa-research/commit/db73c35a54bf9278d5454877b2a94828ca6b74b2))
+* **p40:** document config validate and add JSON envelope coverage ([42dcc2c](https://github.com/smorin/doxa-research/commit/42dcc2c4c2b4508b2b1f7a413d9d2b47c83214e4))
+* **p40:** incorporate review feedback on design spec ([dfb5f61](https://github.com/smorin/doxa-research/commit/dfb5f6189dde8887d9c5dfd7e43d57379f74998d))
+* **p40:** mark P40 in-progress and tick completed tasks ([1a6f56a](https://github.com/smorin/doxa-research/commit/1a6f56abcc307b429e441936d3448c53cb464d88))
+
+
+### CI/CD
+
+* make missing live-API keys loud and harden ec gate ([#91](https://github.com/smorin/doxa-research/issues/91)) ([eeb1240](https://github.com/smorin/doxa-research/commit/eeb1240c36388e95520cd033bfc0e8599920748a))
+* **p40:** add validate-starter-template pre-commit hook ([639a7a6](https://github.com/smorin/doxa-research/commit/639a7a649a9ae560c1af5f9171d8b15e501da1ef))
+
+
+### Testing
+
+* **p40:** add bidirectional drift, profile parse, and structural-superset tests ([a486970](https://github.com/smorin/doxa-research/commit/a486970971eb6adc9a76493fc6be9d9fb181edf4))
+* **p40:** add config validate behavioral tests (TS04a-f) ([53fa355](https://github.com/smorin/doxa-research/commit/53fa3554070119d27663e6262b51e0f3aef52d87))
+* **p40:** add structural assertion for validate-starter-template hook ([ab8faf9](https://github.com/smorin/doxa-research/commit/ab8faf9bc914bf16576bb02b66b9c2103ef8838e))
+* **p40:** capture pre-P40 starter doc as fixture for TS03 ([8b2d305](https://github.com/smorin/doxa-research/commit/8b2d305399d2889955e101032702e017dbe48034))
+* **p40:** remove test_config_starter_round_trip — covered by TS01/02/03 ([6f9dec8](https://github.com/smorin/doxa-research/commit/6f9dec80738e88882fe43d1e70dd002f6e71ea29))
+
 ## [3.0.14](https://github.com/smorin/doxa-research/compare/v3.0.13...v3.0.14) (2026-05-22)
 
 
