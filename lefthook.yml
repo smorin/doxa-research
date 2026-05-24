@@ -115,6 +115,6 @@ pre-push:
     # sees {staged_files}, so violations introduced by GitHub UI edits,
     # LEFTHOOK=0 WIP commits, or PR-merge artifacts can reach main and
     # cascade into every subsequent CI run. This mirrors ci.yml's Hygiene
-    # job. Markdown is excluded via .ecrc (Exclude list).
+    # job. Markdown is excluded via .editorconfig-checker.json (Exclude list).
     editorconfig-full:
       run: uvx --from editorconfig-checker ec
