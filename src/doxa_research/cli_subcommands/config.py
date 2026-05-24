@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import sys
+from pathlib import Path
 from typing import NoReturn
 
 import click
@@ -42,7 +43,7 @@ def config(ctx: click.Context) -> None:
     if ctx.invoked_subcommand is None:
         validate_inherited_options(ctx, "config", NO_INHERITED_OPTIONS)
         click.echo(
-            "Error: config command requires an op (get|set|unset|list|path|edit|help)",
+            "Error: config command requires an op (get|set|unset|list|path|edit|validate|help)",
             err=True,
         )
         ctx.exit(2)
@@ -730,3 +731,72 @@ def config_profiles_remove(ctx: click.Context, name: str, project: bool, as_json
         click.echo(f"Removed profile '{name}'")
     else:
         click.echo(f"No such profile: '{name}'")
+
+
+@config.command(name="validate")
+@click.argument("path", required=False, type=click.Path(path_type=Path))
+@click.option("--json", "as_json", is_flag=True, help="Emit JSON envelope")
+@click.pass_context
+def config_validate(
+    ctx: click.Context,
+    path: Path | None,
+    as_json: bool,
+) -> None:
+    """Validate a TOML config file against the schema.
+
+    With no PATH, validates ``~/.config/doxa/doxa.config.toml`` (or the
+    XDG_CONFIG_HOME equivalent). With PATH, validates that file. When PATH
+    resolves to the shipped starter template, also runs a drift check
+    against the schema's StarterField defaults.
+    """
+    from importlib.resources import files
+
+    from doxa_research.cli_subcommands._config_validate import validate_config_file
+    from doxa_research.json_output import emit_error, emit_json
+    from doxa_research.paths import user_config_file
+
+    target = path if path is not None else user_config_file()
+
+    try:
+        shipped = Path(str(files("doxa_research.data") / "starter.config.toml")).resolve()
+    except (FileNotFoundError, ModuleNotFoundError):
+        msg = "package data missing: doxa_research/data/starter.config.toml"
+        if as_json:
+            emit_error(
+                "PACKAGE_DATA_MISSING",
+                msg,
+                details={"path": "doxa_research/data/starter.config.toml"},
+            )
+        click.echo(f"Error: {msg}", err=True)
+        ctx.exit(1)
+
+    try:
+        target_resolved = target.resolve()
+    except OSError:
+        target_resolved = target
+    drift = target_resolved == shipped
+
+    result = validate_config_file(target, drift_check=drift)
+
+    if as_json:
+        if result.ok:
+            emit_json(
+                {
+                    "path": str(result.path) if result.path else None,
+                    "checks": list(result.checks),
+                }
+            )
+        else:
+            emit_error(
+                result.error or "VALIDATION_FAILED",
+                result.message,
+                details=result.details if result.details else None,
+            )
+        return  # unreachable in practice but makes control flow explicit
+
+    if result.ok:
+        checks = " + ".join(result.checks) if result.checks else ""
+        click.echo(f"OK: {result.path} ({checks})")
+        return
+    click.echo(f"Error: {result.message}", err=True)
+    ctx.exit(1)

@@ -8,7 +8,7 @@
 - **Related:** `src/doxa_research/_starter_data.py` (the `STARTER_PROFILES` list)
 - **Related:** `src/doxa_research/config_schema.py` (`StarterField` marker)
 
-**Status:** `[ ]` Scoped, not started.
+**Status:** `[~]` In progress (PR open; all tasks complete, pending merge).
 
 **Goal**: Restore an on-disk starter config template as the source of truth for
 `doxa init` output, replacing the schema-driven generator introduced in P33.
@@ -155,61 +155,66 @@ output) is unchanged. Only the *source* of those bytes changes.
 
 ## Tests & Tasks
 
-- [ ] [P40-TS01] Write `tests/test_starter_template_matches_schema.py`:
+- [x] [P40-TS01] Write `tests/test_starter_template_matches_schema.py`:
   parse template, walk `StarterField`-marked schema fields, assert
   value-and-path parity between template and schema.
-- [ ] [P40-TS02] Verify every shipped profile (`daily`, `quick`,
+- [x] [P40-TS02] Verify every shipped profile (`daily`, `quick`,
   `openai_deep`, `all_deep`, `interactive`, `deep_research`) parses
   cleanly against `ProfileConfig`.
-- [ ] [P40-TS03] Bit-for-bit comparison test: parse current generator
+- [x] [P40-TS03] Bit-for-bit comparison test: parse current generator
   output and the new template, assert structural equivalence
   (ignoring whitespace + comment formatting differences).
-- [ ] [P40-T01] Add `src/doxa_research/data/starter.config.toml`
+- [x] [P40-T01] Add `src/doxa_research/data/starter.config.toml`
   containing the current generator's output. Include inline comments
   from `WRITER_COMMENTS` next to the relevant sections.
-- [ ] [P40-T02] Add `src/doxa_research/data/__init__.py` (or
+- [x] [P40-T02] Add `src/doxa_research/data/__init__.py` (or
   pyproject.toml package-data) so the template is included in the
   built wheel.
-- [ ] [P40-T03] Replace `_build_starter_document()` with a thin
+- [x] [P40-T03] Replace `_build_starter_document()` with a thin
   reader using `importlib.resources.files("doxa_research.data") /
   "starter.config.toml"`.
-- [ ] [P40-T04] Delete `src/doxa_research/_starter_data.py` and its
+- [x] [P40-T04] Delete `src/doxa_research/_starter_data.py` and its
   `STARTER_PROFILES` references in `commands.py`.
-- [ ] [P40-T05] Delete `WRITER_COMMENTS` from `commands.py` and the
+- [x] [P40-T05] Delete `WRITER_COMMENTS` from `commands.py` and the
   `_emit_starter_section` / `_build_starter_profiles` helpers (no
   longer needed once the template ships the literal bytes).
-- [ ] [P40-T06] Confirm `doxa init`, `doxa init --force`, and
+- [x] [P40-T06] Confirm `doxa init`, `doxa init --force`, and
   `doxa init --non-interactive` all produce identical bytes
   (modulo wizard-mutated keys) to pre-P40 behavior.
-- [ ] [P40-T07] Update `tests/test_init_ships_profiles.py` if any
+  Verified by doxa_test integration suite (75/75 passed).
+- [x] [P40-T07] Update `tests/test_init_ships_profiles.py` if any
   assertion depends on the Python `STARTER_PROFILES` import path
   (replace with template-based assertion or remove if redundant
   with the new drift test).
-- [ ] [P40-T08] Update `docs/HERO-RECORDING.md` / `CONTRIBUTING.md`
+  No changes needed; existing assertions still hold after _starter_data.py
+  removal. pytest 1590 passed, including all init/profile tests.
+- [-] [P40-T08] Update `docs/HERO-RECORDING.md` / `CONTRIBUTING.md`
   if either references the schema-driven generation as a feature
   contributors should know about.
-- [ ] [P40-T09] Implement `doxa config validate [PATH]` subcommand
+  Inspected both files — neither references the schema-driven generation.
+  No changes needed; marking decided-not-to-do.
+- [x] [P40-T09] Implement `doxa config validate [PATH]` subcommand
   in `src/doxa_research/cli_subcommands/config.py`. With no PATH,
   validate the user-tier config; with PATH, validate that file
   against `DoxaConfig`; when PATH is the shipped starter template,
   also run drift assertions against the schema. Support `--json`.
   Exit 0 on success, 1 on failure with a precise location pointer.
-- [ ] [P40-T10] Add a `pre-commit` `validate-starter-template` entry
+- [x] [P40-T10] Add a `pre-commit` `validate-starter-template` entry
   in `lefthook.yml`, globbed to
   `src/doxa_research/data/starter.config.toml`. The entry invokes
   `uv run doxa config validate <that path>`. Hook also runs from CI
   via the existing lefthook-on-CI path (no separate workflow needed).
-- [ ] [P40-T11] Surface the new command in `docs/COMMANDS.md` config
+- [x] [P40-T11] Surface the new command in `docs/COMMANDS.md` config
   subcommands table and add coverage in
   `tests/test_docs_command_reference.py`.
-- [ ] [P40-TS04] Tests for `doxa config validate`:
+- [x] [P40-TS04] Tests for `doxa config validate`:
   - Valid template → exit 0.
   - Template with a value mutated (e.g. swap `default_mode = "default"`
     for `default_mode = "bogus"`) → exit 1 with the failing path.
   - Template missing a `StarterField`-marked key → exit 1 with the
     missing path.
   - JSON envelope shape on both success and failure paths.
-- [ ] [P40-TS05] Smoke-test the pre-commit hook: stage a corrupted
+- [x] [P40-TS05] Smoke-test the pre-commit hook: stage a corrupted
   copy of the template, attempt `git commit`, assert the hook
   rejects the commit and surfaces the validate error.
 
@@ -277,3 +282,13 @@ output) is unchanged. Only the *source* of those bytes changes.
 - **No CLI behavior change** if implemented correctly for the existing
   surface. Acceptance criterion #2 (bit-for-bit parity for
   `doxa init`) is the contract.
+
+## Implementation Notes
+
+- During Task 12 review, the code-quality reviewer caught a regression
+  introduced by the static template: the build machine's literal
+  `checkpoint_dir` (an `XDG_STATE_HOME`-derived path) was being shipped
+  in the wheel and written into every user's `doxa init` output. Fixed
+  by teaching `StarterField` to skip fields with `default_factory=...`
+  — those are env-derived and computed at runtime by Pydantic per-user.
+  Commit `b23858e`.

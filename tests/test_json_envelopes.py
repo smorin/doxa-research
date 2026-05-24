@@ -8,10 +8,13 @@ src/doxa_research/cli_subcommands/ to assert this list stays complete.
 from __future__ import annotations
 
 import json
+from importlib.resources import files
 from pathlib import Path
 
 import pytest
 from click.testing import CliRunner
+
+_SHIPPED_TEMPLATE = str(files("doxa_research.data") / "starter.config.toml")
 
 JSON_COMMANDS: list[tuple[str, list[str], int]] = [
     # (label, argv-after-cli, expected_exit_code)
@@ -75,6 +78,13 @@ JSON_COMMANDS: list[tuple[str, list[str], int]] = [
         0,
     ),
     ("config_profiles_remove", ["config", "profiles", "remove", "fast", "--json"], 0),
+    # P40: config validate
+    ("config_validate_template", ["config", "validate", _SHIPPED_TEMPLATE, "--json"], 0),
+    (
+        "config_validate_missing_file",
+        ["config", "validate", "/nonexistent/p40-test.toml", "--json"],
+        1,
+    ),
 ]
 
 AMBIGUOUS_CONFIG_JSON_COMMANDS: list[tuple[str, list[str]]] = [

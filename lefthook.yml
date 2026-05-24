@@ -86,6 +86,10 @@ pre-commit:
       glob: "*.py"
       run: ./doxa_test -r --provider mock --skip-interactive
 
+    validate-starter-template:
+      glob: "src/doxa_research/data/starter.config.toml"
+      run: uv run doxa config validate src/doxa_research/data/starter.config.toml
+
 pre-push:
   parallel: true
   commands:

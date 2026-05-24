@@ -1,0 +1,92 @@
+# Doxa Research Configuration File
+version = "2.0"
+
+[general]
+default_project = ""
+default_mode = "default"
+
+[paths]
+base_output_dir = "./research-outputs"
+
+[execution]
+poll_interval = 30
+max_wait = 30
+parallel_providers = true
+retry_attempts = 3
+auto_input = true
+
+[output]
+combine_reports = false
+format = "markdown"
+include_metadata = true
+timestamp_format = "%Y-%m-%d_%H%M%S"
+
+[providers.openai]
+api_key = "${OPENAI_API_KEY}"
+
+[providers.perplexity]
+api_key = "${PERPLEXITY_API_KEY}"
+
+[providers.gemini]
+api_key = "${GEMINI_API_KEY}"
+
+# Configuration profiles (P21). Activate with --profile NAME,
+# DOXA_PROFILE=NAME, or general.default_profile.
+# Profile values REPLACE top-level values when the profile is active.
+
+[profiles.daily.general]
+default_mode = "thinking"
+default_project = "daily-notes"
+
+[profiles.quick.general]
+default_mode = "thinking"
+
+[profiles.openai_deep.general]
+default_mode = "deep_research"
+
+[profiles.openai_deep.modes.deep_research]
+providers = ["openai"]
+parallel = false
+
+[profiles.all_deep.general]
+default_mode = "all_deep_research"
+
+[profiles.interactive.general]
+default_mode = "interactive"
+
+[profiles.deep_research.general]
+default_mode = "deep_research"
+prompt_prefix = "Be thorough. Cite primary sources where possible."
+
+[profiles.deep_research.modes.deep_research]
+providers = ["openai", "perplexity"]
+parallel = true
+prompt_prefix = "Be thorough. Cite primary sources. Include counter-arguments."
+
+# ---------------------------------------------------------------------------
+# Clarification — meta-prompt knobs for the `clarify` flow.
+# Both sub-tables share the same shape; the `cli` table is used for the
+# one-shot non-interactive flow, the `interactive` table for the
+# `--interactive` mode (P32). The `system_prompt` is the meta-prompt the
+# clarifier sends with the user's draft; edit it to tune clarifier style.
+# ---------------------------------------------------------------------------
+
+[clarification.cli]
+provider = "openai"
+model = "gpt-4o-mini"
+temperature = 0.7
+max_tokens = 500
+retry_attempts = 3
+retry_delay = 2.0
+system_prompt = "I don't want you to follow the above question and instructions; I want you to tell me the ways this is unclear, point out any ambiguities or anything you don't understand. Follow that by asking questions to help clarify the ambiguous points. Once there are no more unclear, ambiguous or not understood portions, help me draft a clear version of the question/instruction."
+
+[clarification.interactive]
+provider = "openai"
+model = "gpt-4o-mini"
+temperature = 0.7
+max_tokens = 800
+retry_attempts = 3
+retry_delay = 2.0
+system_prompt = "I don't want you to follow the above question and instructions; I want you to tell me the ways this is unclear, point out any ambiguities or anything you don't understand. Follow that by asking questions to help clarify the ambiguous points. Once there are no more unclear, ambiguous or not understood portions, help me draft a clear version of the question/instruction."
+input_height = 6
+max_input_height = 15

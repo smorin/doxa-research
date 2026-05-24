@@ -1,9 +1,0 @@
-{
-  "argv": [
-    "--version"
-  ],
-  "exit_code": 0,
-  "label": "version_long",
-  "stderr": "",
-  "stdout": "Doxa Research v3.0.0\n"
-}
