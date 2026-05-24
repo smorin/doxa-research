@@ -24,19 +24,29 @@ OPENAI_BACKGROUND_MODE = {
 }
 
 
+# In CI (live-api.yml / extended.yml), LIVE_API_STRICT=1 turns missing-key
+# skips into hard failures so a dropped/rotated secret can't silently zero
+# out a provider's coverage. Local dev leaves it unset → skip preserved.
+def _require_key(env_var: str, provider_label: str) -> None:
+    if os.environ.get(env_var):
+        return
+    message = f"{env_var} is required for {provider_label} extended tests"
+    if os.environ.get("LIVE_API_STRICT") == "1":
+        pytest.fail(f"{message} (LIVE_API_STRICT=1)")
+    else:
+        pytest.skip(message)
+
+
 def require_openai_key() -> None:
-    if not os.environ.get("OPENAI_API_KEY"):
-        pytest.skip("OPENAI_API_KEY is required for OpenAI extended tests")
+    _require_key("OPENAI_API_KEY", "OpenAI")
 
 
 def require_perplexity_key() -> None:
-    if not os.environ.get("PERPLEXITY_API_KEY"):
-        pytest.skip("PERPLEXITY_API_KEY is required for Perplexity extended tests")
+    _require_key("PERPLEXITY_API_KEY", "Perplexity")
 
 
 def require_gemini_key() -> None:
-    if not os.environ.get("GEMINI_API_KEY"):
-        pytest.skip("GEMINI_API_KEY is required for Gemini extended tests")
+    _require_key("GEMINI_API_KEY", "Gemini")
 
 
 @pytest.fixture
