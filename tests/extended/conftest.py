@@ -33,7 +33,8 @@ def _require_key(env_var: str, provider_label: str) -> None:
     message = f"{env_var} is required for {provider_label} extended tests"
     if os.environ.get("LIVE_API_STRICT") == "1":
         pytest.fail(f"{message} (LIVE_API_STRICT=1)")
-    pytest.skip(message)
+    else:
+        pytest.skip(message)
 
 
 def require_openai_key() -> None:
