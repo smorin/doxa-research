@@ -16,12 +16,14 @@ during early refactor scaffolding).
 from __future__ import annotations
 
 import os
+import re
 
 import pytest
 
 PARITY_LABELS = [
-    "version_short",
-    "version_long",
+    # `version_short` / `version_long` removed: byte-stable baselines can't
+    # track the live `__version__` that release-please bumps each release.
+    # Covered structurally by `test_version_flags_structural` below.
     "status_no_args",
     "providers_list",
     "config_list",
@@ -54,6 +56,21 @@ def test_dispatch_parity(label: str, baseline, run_doxa):
     assert sorted(stderr.splitlines()) == sorted(expected["stderr"].splitlines()), (
         f"stderr drift for {label}"
     )
+
+
+def test_version_flags_structural(run_doxa):
+    """`-V` and `--version` exit 0 with `Doxa Research vX.Y.Z` on stdout, no stderr.
+
+    Structural rather than byte-stable so release-please version bumps don't
+    have to update test baselines on every release.
+    """
+    for flag in ("-V", "--version"):
+        exit_code, stdout, stderr = run_doxa([flag])
+        assert exit_code == 0, f"{flag}: exit_code={exit_code}, stderr={stderr!r}"
+        assert stderr == "", f"{flag}: unexpected stderr {stderr!r}"
+        assert re.fullmatch(r"Doxa Research v\d+\.\d+\.\d+\s*", stdout), (
+            f"{flag}: stdout {stdout!r} does not match Doxa Research vX.Y.Z"
+        )
 
 
 def test_help_unknown_topic_errors_structural(run_doxa):
