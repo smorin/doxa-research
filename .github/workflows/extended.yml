@@ -37,20 +37,31 @@ jobs:
         with:
           python-version: "3.11"
           enable-cache: true
+      # Split gate: a missing secret reds the workflow conclusion (this
+      # step has no continue-on-error), so scheduled-failure email fires.
+      # A flaky provider during the pytest run below stays informational
+      # (continue-on-error: true on that step) so transient API outages
+      # don't page the team.
+      - name: Verify provider secrets present
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          PERPLEXITY_API_KEY: ${{ secrets.PERPLEXITY_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          missing=0
+          [ -n "$OPENAI_API_KEY" ] || { echo "::error::OPENAI_API_KEY missing"; missing=1; }
+          [ -n "$PERPLEXITY_API_KEY" ] || { echo "::error::PERPLEXITY_API_KEY missing"; missing=1; }
+          [ -n "$GEMINI_API_KEY" ] || { echo "::error::GEMINI_API_KEY missing"; missing=1; }
+          exit "$missing"
       - name: Run extended contract tests
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           PERPLEXITY_API_KEY: ${{ secrets.PERPLEXITY_API_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          # LIVE_API_STRICT=1 turns missing-key skips into pytest failures
-          # (see tests/extended/conftest.py::_require_key). Combined with the
-          # pre-flight echo below, a missing secret produces both a GitHub
-          # annotation naming the env var AND a red pytest line — no more
-          # silent provider zero-coverage.
+          # Defense in depth: even if a key is set but empty in a way the
+          # pre-flight shell test misses, LIVE_API_STRICT=1 makes
+          # require_*_key() helpers pytest.fail instead of pytest.skip.
+          # See tests/extended/conftest.py::_require_key.
           LIVE_API_STRICT: "1"
-        run: |
-          [ -n "$OPENAI_API_KEY" ] || { echo "::error::OPENAI_API_KEY missing"; }
-          [ -n "$PERPLEXITY_API_KEY" ] || { echo "::error::PERPLEXITY_API_KEY missing"; }
-          [ -n "$GEMINI_API_KEY" ] || { echo "::error::GEMINI_API_KEY missing"; }
-          uv run pytest -m "extended and not extended_slow" -v
+        run: uv run pytest -m "extended and not extended_slow" -v
         continue-on-error: true
