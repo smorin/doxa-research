@@ -58,101 +58,17 @@ def _build_profile_section(body: dict[str, Any]) -> tomlkit.items.Table:
     return profile_table
 
 
-WRITER_COMMENTS: dict[str, list[str]] = {
-    "$header": ["Doxa Research Configuration File"],
-    "profiles": [
-        "Configuration profiles (P21). Activate with --profile NAME,",
-        "DOXA_PROFILE=NAME, or general.default_profile.",
-        "Profile values REPLACE top-level values when the profile is active.",
-    ],
-}
-
-
-def _emit_starter_section(
-    doc: tomlkit.TOMLDocument,
-    section_name: str,
-    section_model: type[Any],
-) -> None:
-    """Walk one top-level section model and emit its in-starter fields.
-
-    Only fields whose `json_schema_extra["in_starter"]` is True are emitted.
-    """
-    from pydantic import BaseModel as _BM
-
-    table = tomlkit.table()
-    for name, finfo in section_model.model_fields.items():
-        extra = finfo.json_schema_extra if isinstance(finfo.json_schema_extra, dict) else {}
-        if not extra.get("in_starter"):
-            continue
-        if finfo.default_factory is not None:
-            value = finfo.default_factory()
-        else:
-            value = finfo.default
-        if isinstance(value, _BM):
-            sub_table = tomlkit.table()
-            for sub_name, sub_finfo in type(value).model_fields.items():
-                sub_extra = (
-                    sub_finfo.json_schema_extra
-                    if isinstance(sub_finfo.json_schema_extra, dict)
-                    else {}
-                )
-                if not sub_extra.get("in_starter"):
-                    continue
-                sub_value = getattr(value, sub_name)
-                sub_table[sub_name] = sub_value
-            table[name] = sub_table
-        else:
-            table[name] = value
-    doc[section_name] = table
-
-
-def _build_starter_profiles() -> tomlkit.items.Table:
-    """Build the `[profiles]` super-table shipped by `doxa init`.
-
-    P33: source of truth is `STARTER_PROFILES` in `doxa_research._starter_data`.
-    """
-    from doxa_research._starter_data import STARTER_PROFILES
-
-    profiles = tomlkit.table()
-    for entry in STARTER_PROFILES:
-        profiles[entry.name] = _build_profile_section(entry.body)
-    return profiles
-
-
 def _build_starter_document() -> tomlkit.TOMLDocument:
-    """Construct the full starter `~/.config/doxa_research/doxa.config.toml`.
+    """Read the shipped starter template from package data.
 
-    P33: schema-driven. The set of in-starter fields and their default
-    values comes from `DoxaConfig`'s field metadata; structural prose
-    comes from `WRITER_COMMENTS`.
+    Source of truth is `src/doxa_research/data/starter.config.toml`.
+    See projects/P40-on-disk-starter-template.md.
     """
-    from doxa_research.config_schema import (
-        ClarificationConfig,  # noqa: F401 — imported for completeness, not shipped
-        DoxaConfig,
-        ExecutionConfig,
-        GeneralConfig,
-        OutputConfig,
-        PathsConfig,
-        ProvidersConfig,
-    )
+    from importlib.resources import files
 
-    doc = tomlkit.document()
-    for line in WRITER_COMMENTS.get("$header", []):
-        doc.add(tomlkit.comment(line))
-    doc["version"] = DoxaConfig.model_fields["version"].default
-
-    _emit_starter_section(doc, "general", GeneralConfig)
-    _emit_starter_section(doc, "paths", PathsConfig)
-    _emit_starter_section(doc, "execution", ExecutionConfig)
-    _emit_starter_section(doc, "output", OutputConfig)
-    _emit_starter_section(doc, "providers", ProvidersConfig)
-    # `clarification` is intentionally NOT shipped (no StarterField fields).
-
-    doc.add(tomlkit.nl())
-    for line in WRITER_COMMENTS.get("profiles", []):
-        doc.add(tomlkit.comment(line))
-    doc["profiles"] = _build_starter_profiles()
-    return doc
+    resource = files("doxa_research.data") / "starter.config.toml"
+    text = resource.read_text(encoding="utf-8")
+    return tomlkit.parse(text)
 
 
 def _apply_wizard_answers(doc: tomlkit.TOMLDocument, answers) -> None:

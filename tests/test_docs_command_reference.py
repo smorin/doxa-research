@@ -69,6 +69,7 @@ def test_json_output_docs_cover_json_command_families() -> None:
         "`config list --json`",
         "`config path --json`",
         "`config edit --json`",
+        "`config validate [PATH] --json`",
         "`config profiles list --json`",
         "`config profiles show NAME --json`",
         "`config profiles current --json`",

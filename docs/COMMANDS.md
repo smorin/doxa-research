@@ -41,6 +41,7 @@ All three accept `--provider`, `-P <name>` to filter to a single provider.
 | `list` | Dump the merged configuration; supports `--json` | `doxa config list --json` |
 | `path` | Show the resolved config file path | `doxa config path` |
 | `edit` | Open the active config file in `$EDITOR` | `doxa config edit` |
+| `validate [PATH] [--json]` | Validate a TOML config against the schema; drift-check the shipped starter when PATH resolves to it. | `doxa config validate` |
 | `help` | Show config command help | `doxa config help` |
 
 ### `config profiles` subcommands
