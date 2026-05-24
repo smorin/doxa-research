@@ -11,7 +11,8 @@
     "planning/",
     "research/",
     "uv.lock",
-    "requirements.txt"
+    "requirements.txt",
+    "\\.md$"
   ],
   "AllowedContentTypes": [],
   "PassedFiles": [],

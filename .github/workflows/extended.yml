@@ -42,5 +42,15 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           PERPLEXITY_API_KEY: ${{ secrets.PERPLEXITY_API_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: uv run pytest -m "extended and not extended_slow" -v
+          # LIVE_API_STRICT=1 turns missing-key skips into pytest failures
+          # (see tests/extended/conftest.py::_require_key). Combined with the
+          # pre-flight echo below, a missing secret produces both a GitHub
+          # annotation naming the env var AND a red pytest line — no more
+          # silent provider zero-coverage.
+          LIVE_API_STRICT: "1"
+        run: |
+          [ -n "$OPENAI_API_KEY" ] || { echo "::error::OPENAI_API_KEY missing"; }
+          [ -n "$PERPLEXITY_API_KEY" ] || { echo "::error::PERPLEXITY_API_KEY missing"; }
+          [ -n "$GEMINI_API_KEY" ] || { echo "::error::GEMINI_API_KEY missing"; }
+          uv run pytest -m "extended and not extended_slow" -v
         continue-on-error: true

@@ -14,8 +14,11 @@ pre-commit:
     editorconfig:
       run: uvx --from editorconfig-checker ec {staged_files}
 
+    # Glob excludes md/txt: prose authors shouldn't have trailing
+    # whitespace silently rewritten under them. Source files (yml, sh,
+    # json, toml, cfg, conf, ini) still get the auto-fix.
     trailing-whitespace:
-      glob: "*.{yml,yaml,md,sh,txt,json,toml,cfg,conf,ini}"
+      glob: "*.{yml,yaml,sh,json,toml,cfg,conf,ini}"
       run: |
         for f in {staged_files}; do
           if [ -f "$f" ]; then
@@ -25,7 +28,7 @@ pre-commit:
       stage_fixed: true
 
     end-of-file-fixer:
-      glob: "*.{yml,yaml,md,sh,txt,json,toml,cfg,conf,ini}"
+      glob: "*.{yml,yaml,sh,json,toml,cfg,conf,ini}"
       run: |
         for f in {staged_files}; do
           if [ -f "$f" ] && [ -s "$f" ]; then
@@ -107,3 +110,11 @@ pre-push:
 
     yamllint-full:
       run: uvx yamllint -c .yamllint .
+
+    # Full-tree editorconfig scan. The pre-commit `editorconfig` step only
+    # sees {staged_files}, so violations introduced by GitHub UI edits,
+    # LEFTHOOK=0 WIP commits, or PR-merge artifacts can reach main and
+    # cascade into every subsequent CI run. This mirrors ci.yml's Hygiene
+    # job. Markdown is excluded via .ecrc (Exclude list).
+    editorconfig-full:
+      run: uvx --from editorconfig-checker ec
