@@ -22,8 +22,8 @@ class ValidationResult:
     Attributes:
         ok: True when every applicable phase (parse + schema + optional drift)
             passed.
-        path: Resolved path of the file that was validated. None if the file
-            could not be opened.
+        path: Resolved path of the file that was validated. None only when
+            the input path could not be resolved (e.g. symlink loop).
         error: Stable error code (matches the JSON envelope's `error.code`).
             None on success. Codes: ``FILE_NOT_FOUND``, ``TOML_PARSE_ERROR``,
             ``SCHEMA_VALIDATION``, ``DRIFT_MISSING_KEY``, ``DRIFT_VALUE_MISMATCH``,
@@ -76,8 +76,19 @@ def validate_config_file(
         default_config_dict,
     )
 
-    resolved = path.resolve()
-    if not resolved.exists():
+    try:
+        resolved = path.resolve()
+    except OSError as exc:
+        return ValidationResult(
+            ok=False,
+            path=None,
+            error="FILE_NOT_FOUND",
+            message=f"cannot resolve path: {exc}",
+            details={"path": str(path)},
+            checks=(),
+        )
+
+    if not resolved.is_file():
         return ValidationResult(
             ok=False,
             path=resolved,
@@ -91,6 +102,15 @@ def validate_config_file(
     try:
         text = resolved.read_text(encoding="utf-8")
         doc = tomllib.loads(text)
+    except OSError as exc:
+        return ValidationResult(
+            ok=False,
+            path=resolved,
+            error="FILE_NOT_FOUND",
+            message=f"cannot read file: {exc}",
+            details={"path": str(resolved)},
+            checks=(),
+        )
     except tomllib.TOMLDecodeError as exc:
         return ValidationResult(
             ok=False,

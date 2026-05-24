@@ -140,3 +140,10 @@ def test_ts04f_no_path_no_user_config_errors(cli, tmp_path, monkeypatch) -> None
     payload = json.loads(result.output)
     assert payload["status"] == "error"
     assert payload["error"]["code"] == "FILE_NOT_FOUND"
+
+
+def test_directory_path_returns_file_not_found(tmp_path) -> None:
+    """Passing a directory path returns FILE_NOT_FOUND instead of raising IsADirectoryError."""
+    result = validate_config_file(tmp_path, drift_check=False)
+    assert not result.ok
+    assert result.error == "FILE_NOT_FOUND"

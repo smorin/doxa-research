@@ -217,8 +217,8 @@ A real `--uninstall` flag is a future PR.
 
 | code | When |
 |---|---|
-| `FILE_NOT_FOUND` | PATH does not exist, or no PATH and no user-tier config file. |
-| `TOML_PARSE_ERROR` | File is not valid TOML. `details.path` includes line context where available. |
+| `FILE_NOT_FOUND` | PATH does not exist, is not a regular file, or could not be opened (also: no PATH and no user-tier config file). |
+| `TOML_PARSE_ERROR` | File is not valid TOML. `details.path` is the resolved file path; line/column appear in the human `message` from `tomllib`. |
 | `SCHEMA_VALIDATION` | File parses but fails `UserConfigFile.model_validate`. `details.errors` is the full Pydantic error list. |
 | `DRIFT_MISSING_KEY` | Drift check: template missing a `StarterField` path. `details.path` and `details.expected`. |
 | `DRIFT_VALUE_MISMATCH` | Drift check: value at a `StarterField` path differs from schema default. `details.path`, `details.expected`, `details.actual`. |
