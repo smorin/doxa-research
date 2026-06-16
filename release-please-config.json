@@ -1,5 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "bootstrap-sha": "229962c8be86ffcc636a0c53d50509267bdb5ac2",
   "release-type": "python",
   "pull-request-title-pattern": "chore(release): publish v${version} — review and merge to ship to PyPI",
   "packages": {
@@ -15,11 +16,12 @@
   "changelog-sections": [
     { "type": "feat",     "section": "Features" },
     { "type": "fix",      "section": "Bug Fixes" },
+    { "type": "deps",     "section": "Dependencies" },
     { "type": "perf",     "section": "Performance" },
     { "type": "refactor", "section": "Refactoring" },
     { "type": "docs",     "section": "Documentation" },
-    { "type": "ci",       "section": "CI/CD" },
-    { "type": "test",     "section": "Testing" },
+    { "type": "ci",       "section": "CI/CD",        "hidden": true },
+    { "type": "test",     "section": "Testing",      "hidden": true },
     { "type": "chore",    "section": "Miscellaneous", "hidden": true }
   ]
 }
