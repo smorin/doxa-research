@@ -2,6 +2,13 @@
 
 All notable changes to Doxa Research are documented here.
 
+## [3.1.1](https://github.com/smorin/doxa-research/compare/v3.1.0...v3.1.1) (2026-06-16)
+
+
+### Refactoring
+
+* **version:** derive __version__ from installed package metadata ([#106](https://github.com/smorin/doxa-research/issues/106)) ([56bd2e2](https://github.com/smorin/doxa-research/commit/56bd2e20d961f09c60c8c07c75575ed8e1ba07b2))
+
 ## [3.1.0](https://github.com/smorin/doxa-research/compare/v3.0.14...v3.1.0) (2026-05-24)
 
 
