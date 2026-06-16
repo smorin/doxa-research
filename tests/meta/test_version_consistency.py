@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import json
 import tomllib
+from importlib import metadata
 from pathlib import Path
 
 from doxa_research import __version__
@@ -33,10 +34,27 @@ def test_manifest_matches_pyproject() -> None:
     assert _manifest_version() == _pyproject_version()
 
 
-def test_installed_version_matches_pyproject() -> None:
-    """``__version__`` is derived from installed package metadata.
+def test_installed_metadata_matches_pyproject() -> None:
+    """The distribution-metadata path (the canonical install-time source) matches.
 
-    Requires a synced environment (``uv sync``); the version baked into the
-    installed distribution must match the source-of-truth in pyproject.toml.
+    Uses ``importlib.metadata`` DIRECTLY — not the ``__version__`` import —
+    because ``__init__.py`` has a ``pyproject.toml`` fallback for the
+    ``./doxa`` dev launcher. That fallback would mask a broken install
+    (a missing ``.dist-info/METADATA``, a rename gone wrong, a uv_build
+    regression) by silently substituting the pyproject value. Bypassing
+    the fallback here means a real metadata mismatch is caught loudly.
+    Requires a synced env (``uv sync``).
+    """
+    assert metadata.version("doxa-research") == _pyproject_version()
+
+
+def test_dunder_version_matches_pyproject() -> None:
+    """``doxa_research.__version__`` (consumed by docs/CLI) matches.
+
+    Exercises the fully-resolved value users see — either via
+    ``importlib.metadata`` (installed wheels, uv-managed envs) or via the
+    ``pyproject.toml`` fallback (``./doxa`` launcher). Both branches read
+    the same SSOT, so this test passes regardless of install state; pair
+    it with ``test_installed_metadata_matches_pyproject`` for full coverage.
     """
     assert __version__ == _pyproject_version()
