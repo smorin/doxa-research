@@ -9,6 +9,15 @@ updates:
     labels:
       - "dependencies"
 
+    # Route dependency bumps to the `Dependencies` CHANGELOG section by
+    # using the `deps` type prefix. Without this, dependabot defaults to
+    # `chore(deps): ...`, which release-please buckets under hidden
+    # `chore` — every dependency bump silently disappears from CHANGELOG.
+    # See release-please-config.json `changelog-sections` for the routing.
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+
     # Wait 3 days after a release before opening a PR. Buffer against
     # the "bad release retracted within hours" pattern that hits major
     # libraries like openai or pydantic.
@@ -103,6 +112,11 @@ updates:
     labels:
       - "dependencies"
       - "github-actions"
+
+    # See pip ecosystem above for rationale.
+    commit-message:
+      prefix: "deps"
+      include: "scope"
 
     cooldown:
       default-days: 3

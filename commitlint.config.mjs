@@ -20,6 +20,7 @@ export default {
         'fix',
         'perf',
         'refactor',
+        'deps',
         'docs',
         'test',
         'ci',
@@ -31,7 +32,14 @@ export default {
     ],
     'subject-empty': [2, 'never'],
     'subject-full-stop': [2, 'never', '.'],
+    // Header stays strict — titles should be tight for `git log --oneline`.
     'header-max-length': [2, 'always', 100],
+    // Body/footer raised from the inherited 100-char default to 200. Conventional
+    // commits routinely reference long permalinks, GitHub compare URLs, and
+    // `BREAKING CHANGE:` footers that can't be wrapped. 200 still catches genuinely
+    // unbounded paragraphs.
+    'body-max-line-length': [2, 'always', 200],
+    'footer-max-line-length': [2, 'always', 200],
     'body-leading-blank': [2, 'always'],
     'footer-leading-blank': [2, 'always'],
   },

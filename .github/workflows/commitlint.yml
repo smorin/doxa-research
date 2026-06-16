@@ -16,8 +16,20 @@ concurrency:
   group: commitlint-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
+# Per-author split: humans get the strict config (200-char body/footer caps);
+# dependabot gets the line-length rules disabled (it embeds long release-note
+# URLs that can't be wrapped — see commitlint.dependabot.config.mjs).
+#
+# Selection is on github.event.pull_request.user.login (the PR author),
+# NOT github.actor (which changes per-push and would mis-route after a
+# human pushes a merge commit into a bot-opened PR).
+#
+# The `if:` expressions use a known-vocabulary GitHub context field
+# (user.login) for equality comparison — no shell interpolation, safe.
 jobs:
-  commitlint:
+  commitlint-humans:
+    name: commitlint (humans)
+    if: github.event.pull_request.user.login != 'dependabot[bot]'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6.0.2
@@ -26,3 +38,15 @@ jobs:
       - uses: wagoid/commitlint-github-action@v6
         with:
           configFile: commitlint.config.mjs
+
+  commitlint-dependabot:
+    name: commitlint (dependabot)
+    if: github.event.pull_request.user.login == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6.0.2
+        with:
+          fetch-depth: 0
+      - uses: wagoid/commitlint-github-action@v6
+        with:
+          configFile: commitlint.dependabot.config.mjs
