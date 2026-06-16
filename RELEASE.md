@@ -96,7 +96,7 @@ just install-dev   # uv sync + bun install + lefthook install + gitleaks
 make env-check   # checks uv, python3, just, bun
 ```
 
-**Commit message format:** all commits must follow [Conventional Commits](https://www.conventionalcommits.org/). The local `commit-msg` hook (lefthook) and the `commitlint` CI job both enforce this. Allowed types: `feat`, `fix`, `perf`, `refactor`, `docs`, `test`, `ci`, `chore`, `build`, `style`, `revert`.
+**Commit message format:** all commits must follow [Conventional Commits](https://www.conventionalcommits.org/). The local `commit-msg` hook (lefthook) and the `commitlint` CI job both enforce this. Allowed types: `feat`, `fix`, `perf`, `refactor`, `deps`, `docs`, `test`, `ci`, `chore`, `build`, `style`, `revert`. `deps` is reserved for dependabot bumps (auto-generated via `.github/dependabot.yml`'s `commit-message: prefix: deps` block) and routes to the `Dependencies` CHANGELOG section; humans use `chore` for routine maintenance.
 
 ---
 
@@ -110,7 +110,7 @@ Versions are bumped **automatically** by release-please from conventional-commit
 |----------------|------|
 | `feat!:` or `BREAKING CHANGE:` footer | `MAJOR` |
 | `feat:` | `MINOR` |
-| `fix:`, `perf:`, `refactor:`, `chore:`, `docs:`, `ci:`, `test:`, etc. | `PATCH` |
+| `fix:`, `perf:`, `refactor:`, `deps:`, `chore:`, `docs:`, `ci:`, `test:`, etc. | `PATCH` |
 
 You do **not** edit `pyproject.toml` or `src/doxa_research/__init__.py` version fields directly. release-please updates them in the Release PR.
 

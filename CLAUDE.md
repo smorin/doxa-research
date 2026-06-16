@@ -118,7 +118,7 @@ API references cache at `planning/references.md`.
 
 ## Git Best Practices
 
-**Conventional Commits enforced.** Every commit message: `<type>[scope]: <subject>`. Allowed types: `feat`, `fix`, `perf`, `refactor`, `docs`, `test`, `ci`, `chore`, `build`, `style`, `revert`. Use `feat!:` or `BREAKING CHANGE:` footer for major bumps.
+**Conventional Commits enforced.** Every commit message: `<type>[scope]: <subject>`. Allowed types: `feat`, `fix`, `perf`, `refactor`, `deps`, `docs`, `test`, `ci`, `chore`, `build`, `style`, `revert`. Use `feat!:` or `BREAKING CHANGE:` footer for major bumps. `deps` is reserved for dependabot bumps (configured via `.github/dependabot.yml`); humans use `chore` for routine maintenance.
 
 **Releases automated by release-please.** Don't hand-edit `pyproject.toml`, `src/doxa_research/__init__.py`, `CHANGELOG.md`, or `.release-please-manifest.json` versions. Land conventional commits on `main` → release-please opens a Release PR → merging tags `vX.Y.Z` and triggers `publish.yml`. See `RELEASE.md`.
 

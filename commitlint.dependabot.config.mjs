@@ -41,9 +41,11 @@ export default {
     'subject-empty': [2, 'never'],
     'subject-full-stop': [2, 'never', '.'],
     'header-max-length': [2, 'always', 100],
-    // Disable line-length caps for dependabot — see header comment.
-    'body-max-line-length': [0, 'always'],
-    'footer-max-line-length': [0, 'always'],
+    // Disable line-length caps for dependabot — see header comment. `[0]` is
+    // commitlint's canonical "disabled" form; the second argument is omitted
+    // because severity 0 short-circuits before the option is read.
+    'body-max-line-length': [0],
+    'footer-max-line-length': [0],
     'body-leading-blank': [2, 'always'],
     'footer-leading-blank': [2, 'always'],
   },
