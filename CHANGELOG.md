@@ -2,6 +2,17 @@
 
 All notable changes to Doxa Research are documented here.
 
+## [3.1.2](https://github.com/smorin/doxa-research/compare/v3.1.1...v3.1.2) (2026-06-17)
+
+
+### Dependencies
+
+* bump click in the patch-misc group across 1 directory ([#95](https://github.com/smorin/doxa-research/issues/95)) ([563155f](https://github.com/smorin/doxa-research/commit/563155fb7b5b8467d6ad9c9b133493d91d895576))
+* bump pydantic-core in the pydantic-stack group across 1 directory ([#94](https://github.com/smorin/doxa-research/issues/94)) ([c92fbbe](https://github.com/smorin/doxa-research/commit/c92fbbec5454884cc2ed6d3ec6a05b9088181699))
+* bump the vendor-actions group across 1 directory with 2 updates ([#102](https://github.com/smorin/doxa-research/issues/102)) ([7ae896b](https://github.com/smorin/doxa-research/commit/7ae896b6c93200ede1f72e86fd0d646b33df90a9))
+* bump wcwidth in the terminal-ui group across 1 directory ([#101](https://github.com/smorin/doxa-research/issues/101)) ([59c9b35](https://github.com/smorin/doxa-research/commit/59c9b3506c70ab13417a124b3212b75b9b229699))
+* **deps:** bump the openai-stack group across 1 directory with 2 updates ([#93](https://github.com/smorin/doxa-research/issues/93)) ([9893989](https://github.com/smorin/doxa-research/commit/989398910bc47190437106c73055c2ba34021d48))
+
 ## [3.1.1](https://github.com/smorin/doxa-research/compare/v3.1.0...v3.1.1) (2026-06-16)
 
 
