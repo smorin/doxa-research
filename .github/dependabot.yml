@@ -14,9 +14,13 @@ updates:
     # `chore(deps): ...`, which release-please buckets under hidden
     # `chore` — every dependency bump silently disappears from CHANGELOG.
     # See release-please-config.json `changelog-sections` for the routing.
+    #
+    # `include: scope` is intentionally omitted — dependabot's default
+    # scope is `deps`, which produced redundant `deps(deps): bump …`
+    # subjects. Without it, commits read `deps: bump click from 8.4.0…`,
+    # carrying the same routing info without the duplicate token.
     commit-message:
       prefix: "deps"
-      include: "scope"
 
     # Wait 3 days after a release before opening a PR. Buffer against
     # the "bad release retracted within hours" pattern that hits major
@@ -113,10 +117,9 @@ updates:
       - "dependencies"
       - "github-actions"
 
-    # See pip ecosystem above for rationale.
+    # See pip ecosystem above for rationale (prefix + omitted scope).
     commit-message:
       prefix: "deps"
-      include: "scope"
 
     cooldown:
       default-days: 3
