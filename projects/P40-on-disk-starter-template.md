@@ -8,7 +8,7 @@
 - **Related:** `src/doxa_research/_starter_data.py` (the `STARTER_PROFILES` list)
 - **Related:** `src/doxa_research/config_schema.py` (`StarterField` marker)
 
-**Status:** `[~]` In progress (PR open; all tasks complete, pending merge).
+**Status:** `[x]` Completed (merged via PR #90 on 2026-05-24; shipped in v3.1.0).
 
 **Goal**: Restore an on-disk starter config template as the source of truth for
 `doxa init` output, replacing the schema-driven generator introduced in P33.
