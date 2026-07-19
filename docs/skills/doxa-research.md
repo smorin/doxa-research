@@ -42,7 +42,7 @@ Other installation modes:
 | --- | --- | --- |
 | Plugin (recommended) | You want versioned installation and updates | Use the Claude Code or Codex commands above |
 | Dev symlink | You want edits in a clone to load next session | Clone `https://github.com/smorinlabs/doxa-research`, then link `plugins/doxa-research/skills/doxa-research` into `~/.claude/skills/doxa-research` and `~/.agents/skills/doxa-research` |
-| Direct copy | Marketplace access is unavailable | Copy `plugins/doxa-research/skills/doxa-research/` into the tool's user skills directory |
+| Direct copy | Marketplace access is unavailable | Copy `plugins/doxa-research/skills/doxa-research/` to `~/.claude/skills/doxa-research` for Claude Code or `~/.agents/skills/doxa-research` for Codex |
 
 ## Example session
 

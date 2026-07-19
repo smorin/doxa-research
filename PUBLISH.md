@@ -116,7 +116,7 @@ doxa --version
 | Value | What to use |
 |-------|------------|
 | PyPI project name | `doxa-research` |
-| GitHub owner | `smorin` |
+| GitHub owner | `smorinlabs` |
 | GitHub repo | `doxa-research` |
 | Workflow file | `publish.yml` |
 | TestPyPI environment | `testpypi` |

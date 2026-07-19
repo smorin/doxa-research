@@ -264,7 +264,7 @@ Doxa Research uses [PyPI Trusted Publishing](https://docs.pypi.org/trusted-publi
 3. PyPI validates the token against the registered trusted publisher configuration
 4. If valid, the upload is accepted
 
-### Initial Setup (one-time, per maintainer)
+### Trusted publisher setup (one-time per project identity)
 
 After a repository owner transfer, register the new GitHub Actions identity as
 a trusted publisher on both PyPI and TestPyPI before the next release.
@@ -394,7 +394,7 @@ The OIDC trusted publisher is not configured, or the environment name / workflow
 
 1. The workflow file is named `publish.yml` (not `publish.yaml`)
 2. The environment in the workflow job matches the environment registered on PyPI (`pypi` / `testpypi`)
-3. The repository owner (`smorin`) and name (`doxa-research`) match exactly
+3. The repository owner (`smorinlabs`) and name (`doxa-research`) match exactly
 
 ### Publish fails: `400 File already exists`
 
