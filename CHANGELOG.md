@@ -2,6 +2,18 @@
 
 All notable changes to Doxa Research are documented here.
 
+## [3.2.0](https://github.com/smorinlabs/doxa-research/compare/v3.1.2...v3.2.0) (2026-07-19)
+
+
+### Features
+
+* add Doxa Research skill and complete org migration ([263d49c](https://github.com/smorinlabs/doxa-research/commit/263d49cf5133b20f6c8e6052b12b50c7ab7bfbef))
+
+
+### Documentation
+
+* **p40:** mark P40 complete post-merge ([d55bd2d](https://github.com/smorinlabs/doxa-research/commit/d55bd2d85dcba838762f2ba36946b13b0e21d625))
+
 ## [3.1.2](https://github.com/smorin/doxa-research/compare/v3.1.1...v3.1.2) (2026-06-17)
 
 
