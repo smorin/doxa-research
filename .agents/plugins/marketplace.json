@@ -1,0 +1,20 @@
+{
+  "name": "doxa-research",
+  "interface": {
+    "displayName": "Doxa Research"
+  },
+  "plugins": [
+    {
+      "name": "doxa-research",
+      "source": {
+        "source": "local",
+        "path": "./plugins/doxa-research"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    }
+  ]
+}

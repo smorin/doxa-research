@@ -1,0 +1,25 @@
+{
+  "name": "doxa-research",
+  "version": "0.1.0",
+  "description": "Run fully formed research prompts through Doxa's single- or multi-provider deep-research workflows.",
+  "author": {
+    "name": "Steve Morin",
+    "url": "https://github.com/smorin"
+  },
+  "homepage": "https://github.com/smorinlabs/doxa-research",
+  "repository": "https://github.com/smorinlabs/doxa-research",
+  "license": "AGPL-3.0-or-later",
+  "keywords": ["deep-research", "openai", "perplexity", "gemini", "citations"],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Doxa Research",
+    "shortDescription": "Run multi-provider deep research through Doxa",
+    "longDescription": "Execute approved prompt files with Doxa, monitor background operations, and preserve provider reports and provenance.",
+    "developerName": "Steve Morin",
+    "category": "Developer Tools",
+    "capabilities": ["Research", "CLI"],
+    "defaultPrompt": [
+      "Run these prompt files through Doxa and preserve every provider report."
+    ]
+  }
+}

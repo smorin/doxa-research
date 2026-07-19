@@ -78,6 +78,9 @@ openai.env
 !MILESTONES.md
 !doxa_vcr.md
 !.codex/skills/**/*.md
+!docs/skills/*.md
+!plugins/*/skills/*/SKILL.md
+!plugins/*/skills/*/references/*.md
 
 # Logs
 *.log

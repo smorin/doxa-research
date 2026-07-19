@@ -47,10 +47,10 @@ doxa = "doxa_research.__main__:main"
 doxa-research = "doxa_research.__main__:main"
 
 [project.urls]
-Homepage = "https://github.com/smorin/doxa-research"
-Repository = "https://github.com/smorin/doxa-research"
-Changelog = "https://github.com/smorin/doxa-research/blob/main/CHANGELOG.md"
-"Bug Tracker" = "https://github.com/smorin/doxa-research/issues"
+Homepage = "https://github.com/smorinlabs/doxa-research"
+Repository = "https://github.com/smorinlabs/doxa-research"
+Changelog = "https://github.com/smorinlabs/doxa-research/blob/main/CHANGELOG.md"
+"Bug Tracker" = "https://github.com/smorinlabs/doxa-research/issues"
 
 [build-system]
 requires = ["uv_build>=0.11.8,<0.12"]
@@ -126,4 +126,3 @@ line-ending = "auto"
 [tool.codespell]
 skip = ".git,.venv,htmlcov,uv.lock,bun.lock,requirements.txt,archive,planning,research,node_modules"
 ignore-words-list = "doxa,perplexity,sonar,pplx,openai,hel"
-
