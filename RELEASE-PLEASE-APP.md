@@ -17,11 +17,13 @@ A single GitHub App can be installed on as many repos as you want. **Recommended
 | Reused across repos | Per-repo setup |
 |---|---|
 | The App registration (name, permissions, owner) | The App's installation on the specific repo |
-| The App ID (numeric) | The `RELEASE_PLEASE_APP_ID` repo variable (value is same across repos but stored per-repo) |
-| The App's private key (one `.pem`) | The `RELEASE_PLEASE_APP_PRIVATE_KEY` repo secret (same contents, stored per-repo) |
+| The App Client ID | The `RELEASE_PLEASE_CLIENT_ID` repo secret (same value across repos) |
+| The App's private key (one `.pem`) | The `RELEASE_PLEASE_PRIVATE_KEY` repo secret (same contents, stored per-repo) |
 | The `release-please.yml` workflow shape | The workflow file itself (each repo has its own copy) |
 
-If `smorin-release-please` is installed on `smorin/doxa-research` today and you want it on `smorin/some-other-project` tomorrow, you reuse the App and only redo the per-repo steps (install + variable + secret).
+The organization-owned `release-please-smorinlabs` App is installed for all
+`smorinlabs` repositories. For each repository, provision the two repository
+secrets through the `repo-secrets` workflow.
 
 ## Initial setup — creating the App
 
@@ -29,9 +31,7 @@ This is a one-time action per GitHub account (NOT per repo). If the App already 
 
 ### Step 1 — Open the App creation form
 
-Go to **https://github.com/settings/apps/new**
-
-If you're creating the App for an organization rather than a personal account, use `https://github.com/organizations/<ORG>/settings/apps/new`.
+Go to **https://github.com/organizations/smorinlabs/settings/apps/new**.
 
 ### Step 2 — Fill in the form
 
@@ -39,9 +39,9 @@ Below is each field, what to enter, and why.
 
 #### GitHub App name
 
-`smorin-release-please` (or `<owner>-release-please` for any owner).
+`release-please-smorinlabs`.
 
-The name must be globally unique on GitHub. Suffix with a number if the name is taken (e.g. `smorin-release-please-1`).
+The name must be globally unique on GitHub. Suffix with a number if the name is taken.
 
 #### Description
 
@@ -57,8 +57,8 @@ Only visible to you in App settings; doesn't affect behavior.
 #### Homepage URL
 
 Any valid URL. Examples that work fine:
-- `https://www.github.com/smorin/`
-- `https://github.com/smorin/doxa-research`
+- `https://github.com/smorinlabs/`
+- `https://github.com/smorinlabs/doxa-research`
 
 GitHub requires SOMETHING here but doesn't otherwise use it.
 
@@ -121,15 +121,15 @@ The principle of least privilege: only what release-please needs and nothing mor
 
 #### Where can this GitHub App be installed?
 
-**Only on this account**.
+**Only on this account** (`smorinlabs`).
 
 A public App ("Any account") can be installed by strangers. Private automation Apps should stay scoped to the account that owns them.
 
 ### Step 3 — Click "Create GitHub App"
 
-You're taken to the App's settings page. **Note the App ID** displayed near the top — a 6-7 digit number. You'll need it for every repo.
-
-(The "Client ID" shown alongside is for OAuth and is unrelated.)
+You're taken to the App's settings page. **Note the Client ID** displayed near
+the top. `actions/create-github-app-token@v3` accepts this value through its
+`client-id` input.
 
 ### Step 4 — Generate a private key
 
@@ -137,7 +137,8 @@ On the same settings page, scroll to **Private keys**.
 
 Click **Generate a private key**.
 
-A `.pem` file downloads to your browser, named like `smorin-release-please.YYYY-MM-DD.private-key.pem`.
+A `.pem` file downloads to your browser, named like
+`release-please-smorinlabs.YYYY-MM-DD.private-key.pem`.
 
 **Treat this file as a credential.** Anyone with its contents can act as the App.
 
@@ -148,7 +149,7 @@ You'll paste the entire file contents (header, body, and footer) into the per-re
 After you've stored it in GitHub Secrets for each repo, delete the local file:
 
 ```bash
-rm ~/Downloads/smorin-release-please.*.private-key.pem
+rm ~/Downloads/release-please-smorinlabs.*.private-key.pem
 ```
 
 ## Per-repo setup
@@ -157,32 +158,33 @@ Do this for every repo where you want release-please to drive releases.
 
 ### Step 5 — Install the App on the repo
 
-From the App's settings page, click **Install App** in the LEFT sidebar (or visit `https://github.com/settings/installations`).
+From the App's settings page, click **Install App** in the left sidebar, or
+visit `https://github.com/organizations/smorinlabs/settings/installations`.
 
-Click **Install** next to your account.
+The current `smorinlabs` installation grants access to all repositories, so a
+new or transferred repository is covered automatically. If that policy changes
+to selected repositories, add `doxa-research` explicitly.
 
-Choose **Only select repositories**. In the dropdown, search and select the target repo (e.g. `doxa-research`). Click **Install**.
+### Step 6 — Add `RELEASE_PLEASE_CLIENT_ID` as a repo secret
 
-For each additional repo you want to add later: revisit this page, click **Configure** on the existing installation, add the repo to the "Repository access" list. No need to re-create the App.
+Open: `https://github.com/<owner>/<repo>/settings/secrets/actions`
 
-### Step 6 — Add `RELEASE_PLEASE_APP_ID` as a repo VARIABLE
-
-Open: `https://github.com/<owner>/<repo>/settings/variables/actions`
-
-Click **New repository variable**:
+Click **New repository secret**:
 
 | Field | Value |
 |---|---|
-| Name | `RELEASE_PLEASE_APP_ID` |
-| Value | the 6-7 digit App ID from Step 3 |
+| Name | `RELEASE_PLEASE_CLIENT_ID` |
+| Secret | the Client ID from Step 3 |
 
-Click **Add variable**.
+Click **Add secret**. Although a Client ID is not a private credential on its
+own, the repository's canonical provisioning workflow stores both App inputs in
+the same secret namespace.
 
-The App ID is not secret — it appears in URLs and API responses. Storing it as a Variable is correct; storing it as a Secret would also work but is unnecessary.
+### Step 7 — Add `RELEASE_PLEASE_PRIVATE_KEY` as a repo secret ⚠️
 
-### Step 7 — Add `RELEASE_PLEASE_APP_PRIVATE_KEY` as a repo SECRET ⚠️
-
-**THIS IS A SECRET, NOT A VARIABLE.** Adding it to the wrong store is the most common (and most damaging) setup mistake — see "Variable vs Secret: the critical distinction" below.
+**THIS IS A SECRET, NOT A VARIABLE.** Adding it to the wrong store is the most
+common and most damaging setup mistake; see "Store both workflow inputs as
+repository secrets" below.
 
 Open: `https://github.com/<owner>/<repo>/settings/secrets/actions`
 
@@ -192,7 +194,7 @@ Click **New repository secret**:
 
 | Field | Value |
 |---|---|
-| Name | `RELEASE_PLEASE_APP_PRIVATE_KEY` |
+| Name | `RELEASE_PLEASE_PRIVATE_KEY` |
 | Secret | the ENTIRE contents of the `.pem` file from Step 4, including the `-----BEGIN RSA PRIVATE KEY-----` and `-----END RSA PRIVATE KEY-----` lines |
 
 Click **Add secret**.
@@ -204,14 +206,16 @@ After saving, the secret name appears in the list but the value cannot be viewed
 Confirm `.github/workflows/release-please.yml` looks up the correct names:
 
 ```yaml
-- uses: actions/create-github-app-token@v1
+- uses: actions/create-github-app-token@v3
   id: app-token
   with:
-    app-id: ${{ vars.RELEASE_PLEASE_APP_ID }}
-    private-key: ${{ secrets.RELEASE_PLEASE_APP_PRIVATE_KEY }}
+    client-id: ${{ secrets.RELEASE_PLEASE_CLIENT_ID }}
+    private-key: ${{ secrets.RELEASE_PLEASE_PRIVATE_KEY }}
 ```
 
-Two namespaces are at play: `vars.X` reads from Variables; `secrets.X` reads from Secrets. They are SEPARATE stores. If either expression points at a missing entry, it interpolates to an empty string and the action fails with `Input required and not supplied: <field>`.
+Both values are read from `secrets.X`. If either expression points at a missing
+entry, it interpolates to an empty string and the action fails with
+`Input required and not supplied: <field>`.
 
 ## Verification
 
@@ -232,8 +236,8 @@ gh run watch $(gh run list --workflow=release-please.yml --limit 1 --json databa
 ```
 
 The run should complete green in 10-15 seconds. Both steps must succeed:
-- `Run actions/create-github-app-token@v1`
-- `Run googleapis/release-please-action@v4`
+- `Run actions/create-github-app-token@v3`
+- `Run googleapis/release-please-action@v5`
 
 If release-please calculates a release is due, it opens (or updates) a Release PR. If not, it exits cleanly. Either is a successful smoke test.
 
@@ -246,9 +250,11 @@ A correctly-configured release-please opens a PR titled `chore(main): release X.
 - `CHANGELOG.md`
 - `.release-please-manifest.json`
 
-## Variable vs Secret: the critical distinction
+## Store both workflow inputs as repository secrets
 
-This is the trap most setups fall into at least once. **The two stores look identical in the UI but have opposite security properties.**
+The Variables and Secrets stores look similar in the UI but have different
+security properties. Doxa's current workflow deliberately reads both App inputs
+from repository secrets.
 
 | | Variables | Secrets |
 |---|---|---|
@@ -257,13 +263,13 @@ This is the trap most setups fall into at least once. **The two stores look iden
 | Logs | Routinely interpolated visible into job logs | Masked (GitHub redacts the value if it appears) |
 | Lookup in workflow | `${{ vars.X }}` | `${{ secrets.X }}` |
 | Threat model | "Useful config someone might inspect" | "Anything an attacker could use to impersonate the project" |
-| Best for | Region names, port numbers, App IDs, feature flags | Passwords, tokens, private keys |
+| Best for | Region names, port numbers, feature flags | Client IDs used by this workflow, passwords, tokens, private keys |
 
-**If you add a credential to Variables instead of Secrets:**
+**If you add either workflow input to Variables instead of Secrets:**
 
 1. The lookup expression `${{ secrets.X }}` returns empty (different namespace).
 2. The action fails with `Input required and not supplied: <field>`.
-3. **Meanwhile, the value is readable in cleartext via the public API**:
+3. The variable value is readable in cleartext through the repository API:
    ```bash
    gh api repos/<owner>/<repo>/actions/variables
    ```
@@ -271,52 +277,50 @@ This is the trap most setups fall into at least once. **The two stores look iden
 
 **Recovery if this happens:**
 
-1. Treat the leaked credential as compromised.
-2. Generate a NEW private key in the App settings and revoke/delete the old one.
+1. If the misplaced value was the private key, treat it as compromised.
+2. Generate a new private key and revoke/delete the old one.
 3. Delete the misplaced variable.
-4. Add the NEW key as a SECRET (not the same key — start fresh).
-5. Delete the local `.pem` files.
-6. Audit recent App-token activity: list branches the App could have created, PRs the App opened, commits authored by the App. For personal accounts there's no enterprise audit log, but side-effect audit is achievable.
+4. Use `repo-secrets set --repo smorinlabs/doxa-research --app release-please --overwrite` to restore both repository secrets from 1Password.
+5. Delete local `.pem` files and review organization audit activity.
 
 ## Key rotation
 
 Rotate the private key annually, on suspected leak, or after any team-member offboarding.
 
 1. On the App's settings page → **Generate a private key** → new `.pem` downloads.
-2. Update the `RELEASE_PLEASE_APP_PRIVATE_KEY` secret in EVERY repo where the App is installed: open the secret in Settings → Secrets → Actions → **Update** → paste the new key.
+2. Update the `release-please-smorinlabs` private-key item in 1Password, then run `repo-secrets ... --overwrite` for every repository that uses the App.
 3. On the App's settings page, delete the OLD private key (three-dot menu next to the existing key entry → Delete).
 4. Confirm by pushing an empty commit and watching the workflow.
 
-The App ID does not change during rotation. Only the private key does.
+The Client ID does not change during rotation. Only the private key does.
 
 ## Onboarding a new repo to release-please
 
 For each new repo where you want release-please:
 
-1. **Reuse the existing App.** Go to its installation page (`https://github.com/settings/installations`), click **Configure**, add the new repo to "Repository access".
-2. **Add the variable** in the new repo: `RELEASE_PLEASE_APP_ID` = the same App ID (numeric).
-3. **Add the secret** in the new repo: `RELEASE_PLEASE_APP_PRIVATE_KEY` = the same `.pem` contents.
-4. **Copy `release-please.yml`** from a working repo. Adjust nothing — the workflow file is repo-agnostic; release-please reads project metadata from `release-please-config.json` and `.release-please-manifest.json` in each repo.
-5. **Copy and adapt `release-please-config.json`**:
+1. **Reuse the existing App.** The `smorinlabs` installation currently covers all repositories; otherwise add the new repository to its selected access list.
+2. **Provision both secrets** with `repo-secrets set --repo smorinlabs/REPO --app release-please`.
+3. **Copy `release-please.yml`** from a working repo. Adjust nothing — the workflow file is repo-agnostic; release-please reads project metadata from `release-please-config.json` and `.release-please-manifest.json` in each repo.
+4. **Copy and adapt `release-please-config.json`**:
    - Update `package-name` to the new package's distribution name
    - Update `extra-files` to point at the new package's `__init__.py` (use underscore form for Python module path, e.g. `src/<pkg>_name>/__init__.py`)
-6. **Create `.release-please-manifest.json`**:
+5. **Create `.release-please-manifest.json`**:
    ```json
    { ".": "0.0.0" }
    ```
    (or the current published version if the package has a history)
-7. **Verify** with the smoke test (push an empty commit; watch the workflow).
+6. **Verify** with the smoke test (push an empty commit; watch the workflow).
 
 ## Troubleshooting
 
-### Workflow fails in 6-9 seconds at `Run actions/create-github-app-token@v1`
+### Workflow fails in 6-9 seconds at `Run actions/create-github-app-token@v3`
 
 The action is failing before it can do anything useful. Common causes:
 
 | Error message | Cause | Fix |
 |---|---|---|
-| `Input required and not supplied: private-key` | Secret was added as a Variable (wrong store), OR was never added, OR has a typo in the name | Add it correctly as a Secret named exactly `RELEASE_PLEASE_APP_PRIVATE_KEY`. **If it was in Variables, treat the key as leaked — rotate before retrying.** |
-| `Input required and not supplied: app-id` | Variable was never added, or has a typo | Add `RELEASE_PLEASE_APP_ID` as a Variable (not Secret) |
+| `Input required and not supplied: private-key` | Secret is missing or has the wrong name | Provision `RELEASE_PLEASE_PRIVATE_KEY` with `repo-secrets`; rotate first if a private key was exposed as a Variable |
+| `Input required and not supplied: client-id` | Secret is missing or has the wrong name | Provision `RELEASE_PLEASE_CLIENT_ID` with `repo-secrets` |
 | `Error: A JSON web token could not be decoded` | The `.pem` contents were truncated or mangled when pasted | Re-paste the entire file content including the `-----BEGIN` and `-----END` lines, no extra whitespace, no surrounding code blocks |
 | `Bad credentials` | The App's private key was rotated and the secret holds the old key | Update the secret with the new `.pem` contents |
 
@@ -366,7 +370,7 @@ It **cannot**:
 
 ### What "leaked private key" actually means
 
-A leaked private key means an attacker can mint installation tokens. The blast radius equals the App's installed scope. For an App installed on `smorin/doxa-research` with the permissions above, an attacker could:
+A leaked private key means an attacker can mint installation tokens. The blast radius equals the App's installed scope. For `release-please-smorinlabs`, which is installed for all organization repositories, an attacker could:
 
 - Push malicious code to a branch and open a PR (would still need the PR to be merged, which requires a human)
 - Open issues, comment on PRs
@@ -378,9 +382,9 @@ A leaked private key means an attacker can mint installation tokens. The blast r
 
 The community-standard cadence is **annual rotation**, plus immediate rotation on any suspected leak. Calendar reminder recommended.
 
-### Audit trail for personal accounts
+### Audit trail
 
-Personal-account repos don't have an audit log API. The next-best signal is to look at:
+Use the `smorinlabs` organization audit log first, then review repository side effects:
 
 ```bash
 # Branches that exist in the repo (should all be recognizable):

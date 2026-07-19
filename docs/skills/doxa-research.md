@@ -25,14 +25,14 @@ doxa init
 Install the skill for Claude Code:
 
 ```text
-/plugin marketplace add smorin/doxa-research
+/plugin marketplace add smorinlabs/doxa-research
 /plugin install doxa-research@doxa-research
 ```
 
 Install the skill for Codex:
 
 ```bash
-codex plugin marketplace add smorin/doxa-research --ref main
+codex plugin marketplace add smorinlabs/doxa-research --ref main
 codex plugin add doxa-research@doxa-research
 ```
 
@@ -41,7 +41,7 @@ Other installation modes:
 | Mode | When | How |
 | --- | --- | --- |
 | Plugin (recommended) | You want versioned installation and updates | Use the Claude Code or Codex commands above |
-| Dev symlink | You want edits in a clone to load next session | Clone `https://github.com/smorin/doxa-research`, then link `plugins/doxa-research/skills/doxa-research` into `~/.claude/skills/doxa-research` and `~/.agents/skills/doxa-research` |
+| Dev symlink | You want edits in a clone to load next session | Clone `https://github.com/smorinlabs/doxa-research`, then link `plugins/doxa-research/skills/doxa-research` into `~/.claude/skills/doxa-research` and `~/.agents/skills/doxa-research` |
 | Direct copy | Marketplace access is unavailable | Copy `plugins/doxa-research/skills/doxa-research/` into the tool's user skills directory |
 
 ## Example session

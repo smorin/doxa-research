@@ -266,14 +266,15 @@ Doxa Research uses [PyPI Trusted Publishing](https://docs.pypi.org/trusted-publi
 
 ### Initial Setup (one-time, per maintainer)
 
-You must register the GitHub Actions workflow as a trusted publisher on both PyPI and TestPyPI before the first release.
+After a repository owner transfer, register the new GitHub Actions identity as
+a trusted publisher on both PyPI and TestPyPI before the next release.
 
 **On TestPyPI** ([test.pypi.org/manage/account/publishing/](https://test.pypi.org/manage/account/publishing/)):
 
 | Field | Value |
 |-------|-------|
 | PyPI Project Name | `doxa-research` |
-| Owner | `smorin` |
+| Owner | `smorinlabs` |
 | Repository name | `doxa-research` |
 | Workflow filename | `publish.yml` |
 | Environment name | `testpypi` |
@@ -283,14 +284,14 @@ You must register the GitHub Actions workflow as a trusted publisher on both PyP
 | Field | Value |
 |-------|-------|
 | PyPI Project Name | `doxa-research` |
-| Owner | `smorin` |
+| Owner | `smorinlabs` |
 | Repository name | `doxa-research` |
 | Workflow filename | `publish.yml` |
 | Environment name | `pypi` |
 
 ### GitHub Environments
 
-Two GitHub environments must exist in the repository settings ([Settings → Environments](https://github.com/smorin/doxa-research/settings/environments)):
+Two GitHub environments must exist in the repository settings ([Settings → Environments](https://github.com/smorinlabs/doxa-research/settings/environments)):
 
 - **`testpypi`** — used by the `publish-testpypi` job
 - **`pypi`** — used by the `publish-pypi` job
@@ -313,8 +314,8 @@ Go to [GitHub → Settings → Developer settings → GitHub Apps → New GitHub
 
 | Field | Value |
 |-------|-------|
-| App name | `doxa-research-release-please` (any unique name is fine) |
-| Homepage URL | `https://github.com/smorin/doxa-research` |
+| App name | `release-please-smorinlabs` |
+| Homepage URL | `https://github.com/smorinlabs/doxa-research` |
 | Webhook | Deselect **Active** (no webhook needed) |
 | Repository permissions → Contents | **Read and write** |
 | Repository permissions → Pull requests | **Read and write** |
@@ -330,14 +331,16 @@ On the App's settings page, scroll to **Private keys** and click **Generate a pr
 
 On the App's settings page, click **Install App** → pick the account/org → **Only select repositories** → choose `doxa-research` → **Install**.
 
-### Step 4: Add the App ID and private key to the repo
+### Step 4: Add the Client ID and private key to the repo
 
-Go to [Settings → Secrets and variables → Actions](https://github.com/smorin/doxa-research/settings/secrets/actions):
+Go to [Settings → Secrets and variables → Actions](https://github.com/smorinlabs/doxa-research/settings/secrets/actions):
 
-- **Variable** `RELEASE_PLEASE_APP_ID` — the numeric App ID shown on the App's settings page (not the Client ID).
-- **Secret** `RELEASE_PLEASE_APP_PRIVATE_KEY` — the full contents of the `.pem` file, including the `-----BEGIN ... PRIVATE KEY-----` / `-----END ... PRIVATE KEY-----` lines.
+- **Secret** `RELEASE_PLEASE_CLIENT_ID` — the Client ID shown on the App's settings page.
+- **Secret** `RELEASE_PLEASE_PRIVATE_KEY` — the full contents of the `.pem` file, including the `-----BEGIN ... PRIVATE KEY-----` / `-----END ... PRIVATE KEY-----` lines.
 
-The workflow reads `vars.RELEASE_PLEASE_APP_ID` and `secrets.RELEASE_PLEASE_APP_PRIVATE_KEY`.
+The workflow reads `secrets.RELEASE_PLEASE_CLIENT_ID` and
+`secrets.RELEASE_PLEASE_PRIVATE_KEY`. Provision both through the `repo-secrets`
+workflow so their values come from the `smorinlabs` 1Password references.
 
 ### Step 5: Verify
 
@@ -420,7 +423,7 @@ Check the `release-please` workflow run in the Actions tab. Common causes:
 
 `release-please.yml` is configured to mint a GitHub App installation token (see [GitHub App Setup for release-please](#github-app-setup-for-release-please)) because the default `GITHUB_TOKEN` does **not** retrigger `push`-triggered workflows. If `publish.yml` doesn't fire:
 
-1. Check that the **Create App Token** step in the `release-please` workflow run succeeded. Failures there mean `vars.RELEASE_PLEASE_APP_ID` or `secrets.RELEASE_PLEASE_APP_PRIVATE_KEY` is missing/wrong, or the App isn't installed on this repo — redo the relevant setup step.
+1. Check that the **Create App Token** step in the `release-please` workflow run succeeded. Failures there mean `secrets.RELEASE_PLEASE_CLIENT_ID` or `secrets.RELEASE_PLEASE_PRIVATE_KEY` is missing/wrong, or the App isn't installed on this repo — rerun the `repo-secrets` provisioning step and verify the org App installation.
 2. Confirm the App has **Contents: Read and write** permission (needed to push tags).
 3. As a last-resort fallback, change `publish.yml` to trigger on `release: types: [published]` instead of `push.tags`, since release-please also creates the GitHub Release.
 

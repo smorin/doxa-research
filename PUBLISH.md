@@ -26,10 +26,9 @@ Go to **Settings → Environments** in the GitHub repo and create two environmen
 ### Step 2: Register Trusted Publishing on TestPyPI
 
 1. Log in to https://test.pypi.org
-2. Go to **Account Settings → Publishing → Add a new pending publisher**
-3. Fill in:
-   - **PyPI Project Name**: `doxa-research`
-   - **Owner**: `smorin` (your GitHub username/org)
+2. Open the existing `doxa-research` project, then go to **Manage → Publishing**
+3. Add a GitHub Actions trusted publisher with:
+   - **Owner**: `smorinlabs`
    - **Repository name**: `doxa-research`
    - **Workflow filename**: `publish.yml`
    - **Environment name**: `testpypi`
@@ -37,11 +36,13 @@ Go to **Settings → Environments** in the GitHub repo and create two environmen
 ### Step 3: Register Trusted Publishing on PyPI
 
 1. Log in to https://pypi.org
-2. Go to **Account Settings → Publishing → Add a new pending publisher**
-3. Fill in the same details as TestPyPI but:
+2. Open the existing `doxa-research` project, then go to **Manage → Publishing**
+3. Add the same GitHub Actions trusted publisher as TestPyPI but with:
    - **Environment name**: `pypi`
 
-> On your first publish, PyPI creates the project automatically.
+Keep the previous `smorin/doxa-research` publisher only until the first
+organization-owned publishing verification succeeds, then remove it from both
+indexes.
 
 ### Step 4: Verify `pyproject.toml` metadata
 
@@ -54,7 +55,7 @@ version = "2.5.0"          # Must match git tag: v2.5.0
 authors = [{ name = "Steve Morin", email = "steve.morin@gmail.com" }]
 
 [project.urls]
-Homepage = "https://github.com/smorin/doxa-research"
+Homepage = "https://github.com/smorinlabs/doxa-research"
 ```
 
 ---

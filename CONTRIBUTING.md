@@ -8,7 +8,7 @@ project intro, see the [README](README.md).
 
 ```bash
 # Clone and enter the project
-git clone https://github.com/smorin/doxa-research.git
+git clone https://github.com/smorinlabs/doxa-research.git
 cd doxa-research
 
 # Check bootstrap environment (uv, python3, just)

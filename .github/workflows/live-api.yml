@@ -36,7 +36,7 @@ jobs:
     # Only run live-provider scheduled/manual jobs in the canonical repo.
     # Forks do not receive upstream secrets, and these tests can spend
     # provider quota.
-    if: github.repository == 'smorin/doxa-research'
+    if: github.repository == 'smorinlabs/doxa-research'
     steps:
       - uses: actions/checkout@v6.0.2
       - uses: astral-sh/setup-uv@v8.2.0

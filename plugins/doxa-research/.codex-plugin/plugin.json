@@ -6,8 +6,8 @@
     "name": "Steve Morin",
     "url": "https://github.com/smorin"
   },
-  "homepage": "https://github.com/smorin/doxa-research",
-  "repository": "https://github.com/smorin/doxa-research",
+  "homepage": "https://github.com/smorinlabs/doxa-research",
+  "repository": "https://github.com/smorinlabs/doxa-research",
   "license": "AGPL-3.0-or-later",
   "keywords": ["deep-research", "openai", "perplexity", "gemini", "citations"],
   "skills": "./skills/",

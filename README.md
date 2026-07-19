@@ -3,9 +3,9 @@
 [![PyPI version](https://img.shields.io/pypi/v/doxa-research.svg)](https://pypi.org/project/doxa-research/)
 [![Python versions](https://img.shields.io/pypi/pyversions/doxa-research)](https://pypi.org/project/doxa-research/)
 [![Downloads](https://img.shields.io/pypi/dm/doxa-research)](https://pypi.org/project/doxa-research/)
-[![CI](https://github.com/smorin/doxa-research/actions/workflows/ci.yml/badge.svg)](https://github.com/smorin/doxa-research/actions/workflows/ci.yml)
-[![Last commit](https://img.shields.io/github/last-commit/smorin/doxa-research)](https://github.com/smorin/doxa-research/commits/main)
-[![GitHub stars](https://img.shields.io/github/stars/smorin/doxa-research?style=flat&logo=github)](https://github.com/smorin/doxa-research/stargazers)
+[![CI](https://github.com/smorinlabs/doxa-research/actions/workflows/ci.yml/badge.svg)](https://github.com/smorinlabs/doxa-research/actions/workflows/ci.yml)
+[![Last commit](https://img.shields.io/github/last-commit/smorinlabs/doxa-research)](https://github.com/smorinlabs/doxa-research/commits/main)
+[![GitHub stars](https://img.shields.io/github/stars/smorinlabs/doxa-research?style=flat&logo=github)](https://github.com/smorinlabs/doxa-research/stargazers)
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue)](LICENSE)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
@@ -28,7 +28,7 @@ Immediate modes stream to your terminal. Background Deep Research modes (`all_de
 
 ![Doxa Research fanning out to OpenAI, Perplexity, and Gemini in parallel](docs/assets/hero.svg)
 
-> ⭐ **Like what you see?** [Star the repo](https://github.com/smorin/doxa-research) — it helps others find Doxa and signals which Deep Research integrations to prioritize next.
+> ⭐ **Like what you see?** [Star the repo](https://github.com/smorinlabs/doxa-research) — it helps others find Doxa and signals which Deep Research integrations to prioritize next.
 
 <details>
 <summary><strong>Table of contents</strong></summary>
@@ -131,14 +131,14 @@ background jobs, and preserving provider reports and provenance.
 Claude Code:
 
 ```text
-/plugin marketplace add smorin/doxa-research
+/plugin marketplace add smorinlabs/doxa-research
 /plugin install doxa-research@doxa-research
 ```
 
 Codex:
 
 ```bash
-codex plugin marketplace add smorin/doxa-research --ref main
+codex plugin marketplace add smorinlabs/doxa-research --ref main
 codex plugin add doxa-research@doxa-research
 ```
 
@@ -808,7 +808,7 @@ live-API marker workflow are all in **[CONTRIBUTING.md](CONTRIBUTING.md)**.
 Quickstart for contributors:
 
 ```bash
-git clone https://github.com/smorin/doxa-research.git
+git clone https://github.com/smorinlabs/doxa-research.git
 cd doxa-research
 make env-check && lefthook install && uv sync
 just check && ./doxa_test -r
@@ -923,8 +923,8 @@ See `PROJECTS.md` for the granular task trunk and `archive/` for completed work.
 
 ## Discussion & support
 
-- 🐛 **Bug reports** — [GitHub Issues](https://github.com/smorin/doxa-research/issues)
-- 💡 **Feature requests & general discussion** — [GitHub Discussions](https://github.com/smorin/doxa-research/discussions)
+- 🐛 **Bug reports** — [GitHub Issues](https://github.com/smorinlabs/doxa-research/issues)
+- 💡 **Feature requests & general discussion** — [GitHub Discussions](https://github.com/smorinlabs/doxa-research/discussions)
 - 📋 **Changelog** — [`CHANGELOG.md`](CHANGELOG.md)
 - 🛠️ **Contributing** — see the [Development](#development) section, or [`CONTRIBUTING.md`](CONTRIBUTING.md) if present
 - 🔄 **Migrating from `thoth`** — [`MIGRATION.md`](MIGRATION.md)
