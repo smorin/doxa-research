@@ -119,6 +119,32 @@ Prefer `pip install doxa-research` or `uv tool install doxa-research` if you wan
 
 For per-provider config and resumable / cancellable workflows see [Usage](#usage). For a full migration from the previous `thoth` releases see [MIGRATION.md](MIGRATION.md).
 
+## Agent skill
+
+Doxa ships an installable skill for executing approved prompt files, monitoring
+background jobs, and preserving provider reports and provenance.
+
+| Skill | Purpose |
+| --- | --- |
+| [`doxa-research`](docs/skills/doxa-research.md) | Run single- or multi-provider Deep Research through the Doxa CLI |
+
+Claude Code:
+
+```text
+/plugin marketplace add smorin/doxa-research
+/plugin install doxa-research@doxa-research
+```
+
+Codex:
+
+```bash
+codex plugin marketplace add smorin/doxa-research --ref main
+codex plugin add doxa-research@doxa-research
+```
+
+See [the skill guide](docs/skills/doxa-research.md) for Doxa setup, direct-copy,
+and development installation modes.
+
 ## What a Doxa report looks like
 
 A combined multi-provider report (excerpt). The frontmatter shape and

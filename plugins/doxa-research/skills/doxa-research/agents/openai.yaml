@@ -1,0 +1,6 @@
+interface:
+  display_name: "Doxa Research"
+  short_description: "Run multi-provider deep research through Doxa"
+  default_prompt: >-
+    Use $doxa-research to run this prompt file across the configured
+    deep-research providers and save the reports.
