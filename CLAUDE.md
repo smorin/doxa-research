@@ -136,7 +136,7 @@ Releases publish to PyPI via `publish.yml` when a `vX.Y.Z` tag is pushed. Chain:
 2. Review the PR's CHANGELOG diff for honesty (release-please can propose stale content if the manifest drifted; see CHANGELOG entry for v3.0.6 for a recovery example).
 3. Merge the Release PR → release-please tags `vX.Y.Z` via the GitHub App token.
 4. `publish.yml` runs: build → TestPyPI (auto OIDC) → PyPI (required-reviewer gate; maintainer approves in Actions UI).
-5. `git pull --ff-only origin main` locally to absorb the release commit; `uv sync` should be a no-op (CI's `sync-uv-lock` job already committed the lock update).
+5. On a clean local `main`: `git pull --ff-only origin main` to absorb the release commit; `uv sync` should be a no-op (CI's `sync-uv-lock` job already committed the lock update).
 
 Why the App token vs `GITHUB_TOKEN`: only the App token can retrigger downstream workflows after the tag push. See `RELEASE-PLEASE-APP.md`.
 
