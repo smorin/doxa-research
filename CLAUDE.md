@@ -201,6 +201,7 @@ If `[behind M]` with `M > 0`, STOP and `git pull --ff-only origin main` before c
 release-please bumps `pyproject.toml` + `__init__.py` + manifest when it tags. The CI `sync-uv-lock` job in `release-please.yml` auto-commits the new `uv.lock` on the CI side; your local won't have it until pull.
 
 ```bash
+git switch main
 git pull --ff-only origin main     # pulls release bump + CI's lock-sync
 uv sync                            # idempotent if CI already synced
 ```
