@@ -28,13 +28,13 @@ idna==3.16
     # via
     #   anyio
     #   httpx
-jiter==0.15.0
+jiter==0.16.0
     # via openai
 markdown-it-py==4.2.0
     # via rich
 mdurl==0.1.2
     # via markdown-it-py
-openai==2.41.1
+openai==2.46.0
 platformdirs==4.9.6
 prompt-toolkit==3.0.52
 pydantic==2.13.4
