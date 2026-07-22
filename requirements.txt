@@ -63,5 +63,5 @@ typing-extensions==4.15.0
     #   typing-inspection
 typing-inspection==0.4.2
     # via pydantic
-wcwidth==0.8.1
+wcwidth==0.8.2
     # via prompt-toolkit
