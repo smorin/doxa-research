@@ -2,6 +2,14 @@
 
 All notable changes to Doxa Research are documented here.
 
+## [3.2.1](https://github.com/smorinlabs/doxa-research/compare/v3.2.0...v3.2.1) (2026-09-05)
+
+
+### Documentation
+
+* --ff-only is the primary sync, --rebase the fallback ([8dd2c24](https://github.com/smorinlabs/doxa-research/commit/8dd2c243495fc927ca57a8a9158076a0c1c52078))
+* --ff-only is the primary sync, --rebase the fallback ([73dffd5](https://github.com/smorinlabs/doxa-research/commit/73dffd519b5133ddab983788864cb7bbb869c199))
+
 ## [3.2.0](https://github.com/smorinlabs/doxa-research/compare/v3.1.2...v3.2.0) (2026-07-19)
 
 
