@@ -61,7 +61,7 @@ jobs:
       - name: bandit
         run: uvx bandit -r src/ -ll
       - name: editorconfig-checker
-        run: uvx --from editorconfig-checker ec
+        run: uvx --from 'editorconfig-checker==3.6.1' ec
       - name: Check for large files
         run: |
           max_kb=500

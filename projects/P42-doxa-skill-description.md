@@ -20,7 +20,14 @@ collision (`guided-research`) — from 535 to 328 characters, keeping the
 from firing on generic research requests. Plugin manifests and the
 marketplace entry bump to 0.1.1. Body and CLI behavior unchanged.
 
-### Tests & Tasks
+**TDD: not applicable** — This project changes skill metadata,
+documentation, and validation-tool version pins, with no runtime-code
+change. Validate the actual metadata and configuration as listed below.
+
+## Tests & Tasks
 - [x] [P42-T01] Rewrite the description; keep the explicit-Doxa guard
 - [x] [P42-T02] Bump `.claude-plugin/plugin.json`, `.codex-plugin/plugin.json`, and the marketplace entry to 0.1.1
-- [ ] [P42-TS01] `just check` green; PR merged and main fast-forwarded
+- [x] [P42-T03] Pin editorconfig-checker to 3.6.1 in CI and both local hooks, matching `.editorconfig-checker.json`
+- [x] [P42-TS01] Parse skill frontmatter and plugin/catalog JSON, verify version agreement, and run `skillsmith verify plugins/doxa-research/skills/doxa-research --json`
+- [ ] [P42-TS02] Run the pinned editorconfig checker, actionlint, and the repository hooks without bypasses; confirm CI is green
+- [ ] [P42-T04] Merge PR #145 and fast-forward the main checkout
